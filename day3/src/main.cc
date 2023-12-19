@@ -46,6 +46,10 @@ class MyString {
     return std::string_view{str.c_str() + 1 + start, n};
   }
 
+  const std::string_view extendedRow(size_t column, size_t n) const {
+    return substr(column - 1, n + 2);
+  }
+
   const std::string_view toStringView() const {
     return std::string_view{str.c_str() + 1, str.size() - 2};
   }
@@ -76,17 +80,14 @@ class Matrix {
     matrix.insert(matrix.end() - 1, std::move(mine));
   }
 
-#define F_PR(arg) #arg << arg <<
-
   bool isPart(size_t row, size_t column, size_t n) const {
     // Check the two possible rows separately
-    std::cout << F_PR(row) F_PR(column) F_PR(n) "\n";
-    auto first_row = at(row - 1).substr(column - 1, n + 2);
-    auto last_row = operator[](row + 1).substr(column - 1, n + 2);
+    auto first_row = at(row - 1).extendedRow(column, n);
+    auto last_row = at(row + 1).extendedRow(column, n);
 
     // And the remaining block separately
-    char first_block = operator[](row)[column - 1];
-    char last_block = operator[](row)[column + n];
+    char first_block = at(row)[column - 1];
+    char last_block = at(row)[column + n];
 
     if (is_symbol(first_block) || is_symbol(last_block) ||
         contains_symbol(first_row) || contains_symbol(last_row))
@@ -116,6 +117,7 @@ uint64_t sumParts(const Matrix& matrix) {
         if (matrix.isPart(i, j, numsize)) {
           sum += res;
         }
+        j += numsize;
       }
     }
   }
