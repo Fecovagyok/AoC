@@ -1,18 +1,15 @@
 #include <cstddef>
-#include <cstdint>
 #include <cstdlib>
 #include <iostream>
 #include <vector>
 
 #include "aoc_reader.h"
 
-uint64_t mr_logic(const std::string& str) { return 0; }
-
 class Matrix {
   std::vector<std::string> matrix;
   static constexpr size_t padding = 1;
-  size_t columns = 140;
-  size_t rows = 140;
+  static constexpr size_t columns = 140;
+  static constexpr size_t rows = 140;
 
  public:
   Matrix() {
@@ -32,7 +29,6 @@ class Matrix {
     mine.insert(mine.cend(), ' ');
     mine.insert(mine.cbegin(), ' ');
     matrix.insert(matrix.end() - 1, std::move(mine));
-    rows++;
   }
 };
 
@@ -41,8 +37,6 @@ class Matrix {
 int main() {
   Matrix matrix;
   auto process_line = [&matrix](std::string& buf) { matrix.addRow(buf); };
-  AoCReader reader{process_line, 150};
-  reader.read();
-
-  return 0;
+  AoCReader reader{process_line, 150, "day3/input.txt"};
+  return reader.read();
 }
