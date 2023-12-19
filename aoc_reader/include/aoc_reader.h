@@ -6,21 +6,27 @@
 #include <functional>
 #include <string>
 
-class AoCReader{
+class AoCReader {
   std::string buf;
   static constexpr size_t default_size = 150;
-  std::function<void(const std::string&)> callback;
+  std::function<void(std::string&)> callback;
   const char* const file_name;
 
  public:
-  AoCReader(std::function<void(const std::string&)> cb, const char* f="input.txt",
-                 size_t n = default_size)
+  AoCReader(AoCReader&) = delete;
+  AoCReader(AoCReader&&) = delete;
+  AoCReader& operator=(AoCReader&) = delete;
+  AoCReader& operator=(AoCReader&&) = delete;
+
+  AoCReader(std::function<void(std::string&)> cb, size_t n = default_size,
+            const char* f = "input.txt")
       : buf{}, callback{cb}, file_name{f} {
     std::ios_base::sync_with_stdio(false);
     buf.reserve(n);
   }
 
   int read();
+  ~AoCReader() = default;
 };
 
 #endif  //! __cplusplus

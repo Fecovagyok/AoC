@@ -1,9 +1,9 @@
-#include "readin.h"
+#include "aoc_reader.h"
 
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
-int AoCReader::read(){
+int AoCReader::read() {
   std::ios_base::sync_with_stdio(false);
   std::ifstream input{file_name};
   if (input.fail()) {
@@ -20,7 +20,7 @@ int AoCReader::read(){
       std::cerr << "Fail before eof? How did we get here?" << std::endl;
       return -2;
     }
-    callback(buf);    
+    callback(buf);
   }
   return 0;
 }
