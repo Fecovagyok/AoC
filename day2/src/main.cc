@@ -20,9 +20,9 @@
   }
 
 struct Round {
-  int64_t red = -1;
-  int64_t green = -1;
-  int64_t blue = -1;
+#define X(colour) int64_t colour = -1;
+  COLOURS
+#undef X
 
   uint16_t read_round(const std::string_view buf,
                       std::string_view::const_iterator& it) {
