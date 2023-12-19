@@ -57,10 +57,10 @@ class MyString {
 
 class Matrix {
   std::vector<MyString> matrix;
-  static constexpr size_t columns = 140;
-  static constexpr size_t rows = 140;
 
  public:
+  static constexpr size_t columns = 140;
+  static constexpr size_t rows = 140;
   Matrix() {
     matrix.reserve(rows + 2 * padding);
     matrix.insert(matrix.begin(), MyString(columns + 2 * padding, '.'));
@@ -107,21 +107,72 @@ uint64_t myToInt(const MyString& str, size_t i, size_t* size) {
   return num;
 }
 
+struct GearVal {
+  uint64_t product;
+  uint16_t quantity;
+};
+
+class GearStorage {
+  std::vector<std::vector<GearVal>> matrix;
+
+  void check_char(const Matrix& m, size_t row, size_t column, uint64_t num) {
+    char c = m[row][column];
+    if (c == '*') {
+      matrix[row][column].product *= num;
+      matrix[row][column].quantity++;
+    }
+  }
+
+  void check_row(const Matrix& m, size_t row, size_t column, size_t n,
+                 uint64_t num) {
+    auto adjacents = m[row].extendedRow(column, n);
+    for (size_t i = 0; i < adjacents.size(); i++) {
+      check_char(m, row, column + i - 1, num);
+    }
+  }
+
+ public:
+  GearStorage() : matrix(140, std::vector<GearVal>{140, {1, 0}}) {}
+
+  void addPart(const Matrix& matrix, size_t row, size_t column, size_t n,
+               uint64_t num) {
+    // Check the two possible rows separately
+    check_row(matrix, row - 1, column, n, num);
+    check_row(matrix, row + 1, column, n, num);
+
+    // And the remaining block separately
+    check_char(matrix, row, column - 1, num);
+    check_char(matrix, row, column + n, num);
+  }
+
+  uint64_t calcSum() {
+    uint64_t sum = 0;
+    for (const auto& row : matrix) {
+      for (const auto& gear : row) {
+        if (gear.quantity == 2) {
+          sum += gear.product;
+        }
+      }
+    }
+    return sum;
+  }
+};
+
 uint64_t sumParts(const Matrix& matrix) {
-  uint64_t sum = 0;
+  GearStorage storage;
   for (size_t i = 0; i < matrix.size(); i++) {
     for (size_t j = 0; j < matrix[i].size(); j++) {
       if (std::isdigit(matrix[i][j])) {
         size_t numsize;
         size_t res = myToInt(matrix[i], j, &numsize);
         if (matrix.isPart(i, j, numsize)) {
-          sum += res;
+          storage.addPart(matrix, i, j, numsize, res);
         }
         j += numsize;
       }
     }
   }
-  return sum;
+  return storage.calcSum();
 }
 
 #define BUFF_SIZE 150
