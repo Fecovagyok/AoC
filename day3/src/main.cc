@@ -134,4 +134,5 @@ int main() {
   if (result < 0) return result;
 
   std::cout << "Sum of parts: " << sumParts(matrix) << std::endl;
+  return 0;
 }
