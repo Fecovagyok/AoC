@@ -1,4 +1,5 @@
 #include <cstdint>
+#include <iostream>
 #include <sstream>
 #include <string>
 #include <unordered_set>
@@ -21,8 +22,8 @@ int main() {
     std::istringstream ss{buf};
     ss.ignore(buf.size(), ':');
     ss.ignore(buf.size(), ' ');
-    std::unordered_set<uint16_t> winners(9);
-    for (uint8_t i = 0; i < 9; i++) {
+    std::unordered_set<uint16_t> winners(10);
+    for (uint8_t i = 0; i < 10; i++) {
       uint16_t in;
       ss >> in;
       winners.insert(in);
@@ -41,4 +42,5 @@ int main() {
 
   AoCReader reader{process_line, 270, "day4/input.txt"};
   reader.read();
+  std::cout << points << std::endl;
 }
