@@ -34,16 +34,15 @@ class MyMap {
     file.ignore(10000, ':');
     file.ignore(1, '\n');
 
-    MyTreeEntry entry;
-    file >> entry.dest;
-    file >> entry.src;
-    file >> entry.len;
-    map.insert(entry);
+    while (file.peek() != '\n' && !file.eof() && !file.fail()) {
+      map.read(file);
+      file.ignore(1, '\n');
+    }
   }
 };
 
 class MyMapList {
-  std::array<MyMap, 7> maps;
+  std::array<MyMap, 7> maps{MyMap{}};
 
  public:
   void read(std::istream& file) {
@@ -61,6 +60,7 @@ int main() {
   read_seeds(seeds, file);
 
   MyMapList list;
+  list.read(file);
 
   return 0;
 }
