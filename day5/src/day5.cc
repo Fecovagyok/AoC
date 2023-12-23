@@ -6,6 +6,8 @@
 #include <istream>
 #include <vector>
 
+#include "custom_tree.h"
+
 using std::cout;
 using std::endl;
 
@@ -25,14 +27,18 @@ void read_seeds(Seeds& seeds, std::istream& file) {
 }
 
 class MyMap {
+  MyTreeMap map;
+
  public:
   void read(std::istream& file) {
     file.ignore(10000, ':');
     file.ignore(1, '\n');
 
-    uint64_t num;
-    file >> num;
-    cout << num << endl;
+    MyTreeEntry entry;
+    file >> entry.dest;
+    file >> entry.src;
+    file >> entry.len;
+    map.insert(entry);
   }
 };
 
