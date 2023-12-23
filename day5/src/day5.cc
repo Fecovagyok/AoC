@@ -73,7 +73,7 @@ class MyMapList {
 
 int main() {
   std::ios_base::sync_with_stdio(false);
-  std::ifstream file{"day5/example.txt"};
+  std::ifstream file{"day5/input.txt"};
 
   Seeds seeds;
   read_seeds(seeds, file);
