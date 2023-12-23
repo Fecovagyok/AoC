@@ -10,12 +10,9 @@
 
 #include "custom_tree.h"
 
-using std::cout;
-using std::endl;
-
 struct Seed {
-  uint64_t seed;
-  uint64_t location = 0;
+  uint64_t seed_start;
+  uint64_t seed_len;
 };
 
 typedef std::vector<Seed> Seeds;
@@ -26,7 +23,8 @@ void read_seeds(Seeds& seeds, std::istream& file) {
   seeds.reserve(60);
 
   while (true) {
-    file >> seed.seed;
+    file >> seed.seed_start;
+    file >> seed.seed_len;
     if (file.eof() || file.fail()) break;
     seeds.push_back(seed);
   }
@@ -61,15 +59,28 @@ class MyMapList {
     }
   }
 
-  uint64_t getLocation(Seed& seed) {
-    uint64_t seed_val = seed.seed;
+  uint64_t getLocation(uint64_t seed) const {
+    uint64_t seed_val = seed;
     for (const auto& map : maps) {
       seed_val = map.get(seed_val);
     }
-    seed.location = seed_val;
     return seed_val;
   }
 };
+
+uint64_t find_lowest_seed(const Seeds& seeds, const MyMapList& list) {
+  uint64_t min = -1;
+  for (const auto& seed : seeds) {
+    for (uint64_t i = seed.seed_start; i < seed.seed_start + seed.seed_len;
+         i++) {
+      uint64_t loc = list.getLocation(i);
+      if (loc < min) {
+        min = loc;
+      }
+    }
+  }
+  return min;
+}
 
 int main() {
   std::ios_base::sync_with_stdio(false);
@@ -81,14 +92,7 @@ int main() {
   MyMapList list;
   list.read(file);
 
-  for (auto& seed : seeds) list.getLocation(seed);
-
-  std::cout << std::min_element(seeds.cbegin(), seeds.cend(),
-                                [](const Seed first, const Seed second) {
-                                  return first.location < second.location;
-                                })
-                   ->location
-            << std::endl;
+  std::cout << find_lowest_seed(seeds, list) << std::endl;
 
   return 0;
 }
