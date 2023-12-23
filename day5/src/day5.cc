@@ -1,9 +1,11 @@
+#include <algorithm>
 #include <array>
 #include <cstdint>
 #include <fstream>
 #include <ios>
 #include <iostream>
 #include <istream>
+#include <ostream>
 #include <vector>
 
 #include "custom_tree.h"
@@ -11,17 +13,22 @@
 using std::cout;
 using std::endl;
 
-typedef std::vector<uint64_t> Seeds;
+struct Seed {
+  uint64_t seed;
+  uint64_t location = 0;
+};
+
+typedef std::vector<Seed> Seeds;
 
 void read_seeds(Seeds& seeds, std::istream& file) {
   file.ignore(10, ' ');
-  uint64_t num;
+  Seed seed;
   seeds.reserve(60);
 
   while (true) {
-    file >> num;
+    file >> seed.seed;
     if (file.eof() || file.fail()) break;
-    seeds.push_back(num);
+    seeds.push_back(seed);
   }
   file.clear();
 }
@@ -39,16 +46,28 @@ class MyMap {
       file.ignore(1, '\n');
     }
   }
+
+ public:
+  uint64_t get(uint64_t num) const { return map.get(num); }
 };
 
 class MyMapList {
-  std::array<MyMap, 7> maps{MyMap{}};
+  std::array<MyMap, 7> maps{};
 
  public:
   void read(std::istream& file) {
     for (auto& map : maps) {
       map.read(file);
     }
+  }
+
+  uint64_t getLocation(Seed& seed) {
+    uint64_t seed_val = seed.seed;
+    for (const auto& map : maps) {
+      seed_val = map.get(seed_val);
+    }
+    seed.location = seed_val;
+    return seed_val;
   }
 };
 
@@ -61,6 +80,15 @@ int main() {
 
   MyMapList list;
   list.read(file);
+
+  for (auto& seed : seeds) list.getLocation(seed);
+
+  std::cout << std::min_element(seeds.cbegin(), seeds.cend(),
+                                [](const Seed first, const Seed second) {
+                                  return first.location < second.location;
+                                })
+                   ->location
+            << std::endl;
 
   return 0;
 }
