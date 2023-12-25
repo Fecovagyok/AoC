@@ -14,7 +14,7 @@ struct NodeProps {
   NodeProps() { adjacents.reserve(20); }
   NodeProps(Node node) : node(node) { adjacents.reserve(20); }
 
-  void buildDFS(DFSHelper& graph, Node prev) {
+  void buildDFS(DFSHelper& graph) {
     graph.currentDFSInsert(node);
     for (size_t i = 0; i < adjacents.size(); i++) {
       LinkProps& link_to_next = graph.getLinkProps(Link{node, adjacents[i]});
@@ -23,7 +23,7 @@ struct NodeProps {
         continue;
       }
       link_to_next.link_used_in_dfs++;
-      next_node.buildDFS(graph, node);
+      next_node.buildDFS(graph);
     }
   }
   bool operator<(const NodeProps& other) const { return node < other.node; }
@@ -93,6 +93,7 @@ class Graph : DFSHelper {
         if (set.count(node_ids[i]) == 1) {
           std::cout << "Baj"
                     << "\n";
+          exit(1);
         }
         set.insert(node_ids[i]);
       }
@@ -102,7 +103,7 @@ class Graph : DFSHelper {
   void dfs() {
     for (auto& node : nodes) {
       currentDFSMap.clear();
-      node.second.buildDFS(*this, node.second.node);
+      node.second.buildDFS(*this);
     }
     std::vector<std::string> kalap;
     kalap.reserve(linkMap.size());
