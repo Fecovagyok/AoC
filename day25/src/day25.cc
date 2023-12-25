@@ -20,12 +20,7 @@ int main() {
     }
     is.ignore(1, ':');
     while (true) {
-      is.ignore(1, ' ');
-      Node other;
-      if (other.read(is)) {
-        break;
-      }
-      graph.insert(Link{first, other});
+      graph.readLinkMap(is, first);
     }
   };
 

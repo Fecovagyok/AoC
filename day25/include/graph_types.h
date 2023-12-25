@@ -10,13 +10,24 @@
 
 class Graph {
   std::vector<Link> links;
-  std::map<Node, Nodes> link_map;
+  LinkMap linkMap;
 
  public:
   Graph() { links.reserve(1200); }
   void insert(Link node) { links.push_back(node); }
 
-  void read(std::istream& is) {}
+  void readLinkMap(std::istream& is, Node key) {
+    Node node;
+    Nodes nodes;
+    nodes.reserve(8);
+    while (true) {
+      if (node.read(is)) {
+        break;
+      }
+      nodes.push_back(node);
+    }
+    linkMap[node] = std::move(nodes);
+  }
 
   const Link& operator[](size_t idx) const { return links[idx]; }
   const Link& at(size_t idx) const { return links[idx]; }
