@@ -29,7 +29,18 @@ struct NodeProps {
     lowest = -1;
   }
 
-  void buildDFS(DFSHelper& graph, Node prev) {
+  void buildDFS(DFSHelper& graph, std::unordered_set<NodeProps*>& sets) {
+    inDFS = true;
+    sets.insert(this);
+    for (size_t i = 0; i < adjacents.size(); i++) {
+      NodeProps& next_node = graph.getNodeProps(adjacents[i]);
+      if (!next_node.inDFS) {
+        buildDFS(graph, sets);
+      }
+    }
+  }
+
+  void buildTarjanDFS(DFSHelper& graph, Node prev) {
     graph.incTime();
     inDFS = true;
     lowest = discovery = graph.getTime();
@@ -40,7 +51,7 @@ struct NodeProps {
       if (next_node.inDFS) {
         lowest = std::min(lowest, next_node.discovery);
       } else {
-        next_node.buildDFS(graph, node);
+        next_node.buildTarjanDFS(graph, node);
         lowest = std::min(lowest, next_node.discovery);
         LinkProps& link_to_next = graph.getLinkProps(Link{node, adjacents[i]});
 
@@ -126,13 +137,30 @@ class Graph : public DFSHelper {
     }
   }
 
-  void trySolutions() {}
+  void resetDFSAll() {
+    for (auto& node : nodes) {
+      node.second.resetDFS();
+    }
+  }
+
+  void trySolutions(
+      const std::vector<std::vector<LinkProps>>& winnerScenarios) {
+    std::unordered_set<NodeProps*> first;
+    std::unordered_set<NodeProps*> second;
+    for (const auto& scenario : winnerScenarios) {
+      for (const auto& link_it : scenario) {
+        NodeProps& nodeA = nodes.at(link_it.link.getA());
+        resetDFSAll();
+        nodeA.buildDFS(*this, std::unordered_set<NodeProps*> & sets)
+      }
+    }
+  }
 
   void dfs() {
     std::vector<std::vector<LinkProps*>> winnerScenarios;
     for (auto& node_it : nodes) {
       NodeProps& nodeProps = node_it.second;
-      nodeProps.buildDFS(*this, nodeProps.node);
+      nodeProps.buildTarjanDFS(*this, nodeProps.node);
       if (winners.size() == 3) {
         std::cout << "Baszo" << std::endl;
         for (size_t i = 0; i < winners.size(); i++) {
