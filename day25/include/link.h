@@ -41,6 +41,7 @@ struct LinkComp {
   }
 };
 
+// Maybe this might be an index structure later
 class LinkMap {
   std::unordered_map<Node, NodeProps> map;
   NodePropsCont* nodeProps = nullptr;

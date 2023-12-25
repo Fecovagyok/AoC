@@ -39,9 +39,12 @@ struct NodeProps {
   Node node;
   Nodes adjacents;
   bool searchProp1 = false;
+  std::string name;
 
   NodeProps() { adjacents.reserve(20); }
-  NodeProps(Node node) : node(node) { adjacents.reserve(20); }
+  NodeProps(Node node) : node(node), name(node.toString()) {
+    adjacents.reserve(20);
+  }
 
   bool operator<(const NodeProps& other) const { return node < other.node; }
   bool operator>(const NodeProps& other) const { return node > other.node; }
@@ -64,4 +67,4 @@ struct NodeComp {
   bool operator()(Node first, Node other) { return first < other; }
 };
 
-using NodePropsCont = std::unordered_set<NodeProps>;
+using NodePropsCont = std::unordered_map<Node, NodeProps>;
