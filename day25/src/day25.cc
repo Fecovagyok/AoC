@@ -1,4 +1,3 @@
-#include <cstdint>
 #include <cstdlib>
 #include <ios>
 #include <iostream>
@@ -27,7 +26,6 @@ int main() {
         break;
       }
       graph.insert(Link{first, other});
-      std::cout << Link{first, other}.toString() << std::endl;
     }
   };
 
