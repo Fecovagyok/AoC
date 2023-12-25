@@ -41,4 +41,4 @@ struct LinkComp {
   }
 };
 
-typedef std::map<Node, Nodes> LinkMap;
+typedef std::map<Node, NodeProps> LinkMap;
