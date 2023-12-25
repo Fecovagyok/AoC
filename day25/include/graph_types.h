@@ -144,14 +144,21 @@ class Graph : public DFSHelper {
   }
 
   void trySolutions(
-      const std::vector<std::vector<LinkProps>>& winnerScenarios) {
+      const std::vector<std::vector<LinkProps*>>& winnerScenarios) {
     std::unordered_set<NodeProps*> first;
     std::unordered_set<NodeProps*> second;
     for (const auto& scenario : winnerScenarios) {
       for (const auto& link_it : scenario) {
-        NodeProps& nodeA = nodes.at(link_it.link.getA());
+        NodeProps& nodeA = nodes.at(link_it->link.getA());
         resetDFSAll();
-        nodeA.buildDFS(*this, std::unordered_set<NodeProps*> & sets)
+        nodeA.buildDFS(*this, first);
+        NodeProps& nodeB = nodes.at(link_it->link.getB());
+        resetDFSAll();
+        nodeB.buildDFS(*this, second);
+        if (first.size() + second.size() == nodes.size()) {
+          std::cout << "asl;dkas;ldkas;l" << std::endl;
+          exit(0);
+        }
       }
     }
   }
@@ -167,7 +174,8 @@ class Graph : public DFSHelper {
           std::cout << winners[i]->name << "\n";
         }
       }
-      node_it.second.resetDFS();
+      trySolutions(winnerScenarios);
+      resetDFSAll();
       time = 0;
       winnerScenarios.push_back(winners);
       winners.clear();
