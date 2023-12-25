@@ -15,16 +15,14 @@ struct NodeProps {
   NodeProps(Node node) : node(node) { adjacents.reserve(20); }
 
   void buildDFS(DFSHelper& graph, Node prev) {
-    if (graph.currentDFSContains(node)) {
-      LinkProps& props = graph.getLinkProps(Link{node, prev});
-      props.link_used_in_dfs--;
-      return;
-    }
     graph.currentDFSInsert(node);
     for (size_t i = 0; i < adjacents.size(); i++) {
       LinkProps& link_to_next = graph.getLinkProps(Link{node, adjacents[i]});
-      link_to_next.link_used_in_dfs++;
       NodeProps& next_node = graph.getNodeProps(adjacents[i]);
+      if (graph.currentDFSContains(next_node.node)) {
+        continue;
+      }
+      link_to_next.link_used_in_dfs++;
       next_node.buildDFS(graph, node);
     }
   }
