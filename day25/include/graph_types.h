@@ -35,7 +35,7 @@ struct NodeProps {
     for (size_t i = 0; i < adjacents.size(); i++) {
       NodeProps& next_node = graph.getNodeProps(adjacents[i]);
       if (!next_node.inDFS) {
-        buildDFS(graph, sets);
+        next_node.buildDFS(graph, sets);
       }
     }
   }
