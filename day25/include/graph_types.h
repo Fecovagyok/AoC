@@ -11,11 +11,11 @@ class Graph {
   LinkMap linkMap;
 
  public:
-  void readLinkMap(std::istream& is, Node key) {
+  void readLinkMap(std::istream &is, Node key) {
     Node node;
     NodeProps local_nodes;
-    NodeProps eNode{node};
-    nodes.insert(std::move(eNode));
+    auto nodeProps = nodes.emplace(key).first;
+
     while (true) {
       if (node.read(is)) {
         break;
