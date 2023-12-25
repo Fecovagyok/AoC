@@ -29,7 +29,7 @@ struct NodeProps {
     lowest = -1;
   }
 
-  void buildTarjanDFS(DFSHelper& graph, Node prev) {
+  void buildDFS(DFSHelper& graph, Node prev) {
     graph.incTime();
     inDFS = true;
     lowest = discovery = graph.getTime();
@@ -40,7 +40,7 @@ struct NodeProps {
       if (next_node.inDFS) {
         lowest = std::min(lowest, next_node.discovery);
       } else {
-        next_node.buildTarjanDFS(graph, node);
+        next_node.buildDFS(graph, node);
         lowest = std::min(lowest, next_node.discovery);
         LinkProps& link_to_next = graph.getLinkProps(Link{node, adjacents[i]});
 
@@ -100,23 +100,8 @@ class Graph : public DFSHelper {
 
   std::vector<LinkProps*> winners;
 
-  void resetDFSAll() {
-    for (auto& node : nodes) {
-      node.second.resetDFS();
-    }
-  }
-
   NodeProps& getNodeProps(Node node) override { return nodes[node]; }
-  LinkProps& getLinkProps(Link link) override {
-    try {
-      return linkMap.at(link);
-    } catch (std::exception& e) {
-      std::cout << "NAgay a baj"
-                << "\n"
-                << std::endl;
-      throw;
-    }
-  }
+  LinkProps& getLinkProps(Link link) override { return linkMap.at(link); }
   uint64_t getTime() override { return time; }
   void incTime() override { time++; }
   void addLinkProps(LinkProps& link) override { winners.push_back(&link); }
@@ -141,37 +126,12 @@ class Graph : public DFSHelper {
     }
   }
 
-  void trySolution(NodeProps& node) {
-    std::unordered_set<NodeProps*> first;
-    std::unordered_set<NodeProps*> second;
-    for (size_t i = 0; i < winners.size(); i++) {
-      NodeProps& propsA = nodes[winners[i]->link.getA()];
-      NodeProps& propsB = nodes[winners[i]->link.getB()];
-
-      resetDFSAll();
-
-      propsA.buildDFS(*this, first);
-
-      resetDFSAll();
-
-      propsB.buildDFS(*this, second);
-
-      if (first.size() + second.size() == nodes.size()) {
-        std::cout << "salkfnsdlkfjaslkfdjalksjfdlkasjflkasjflkasjal"
-                  << std::endl;
-      } else {
-        std::cout << "\nEredmenyek: " << first.size() << " + " << second.size();
-      }
-    }
-  }
-
   void dfs() {
     for (auto& node_it : nodes) {
       NodeProps& nodeProps = node_it.second;
-      nodeProps.buildTarjanDFS(*this, nodeProps.node);
+      nodeProps.buildDFS(*this, nodeProps.node);
       if (winners.size() == 3) {
         std::cout << "Baszo" << std::endl;
-        trySolution(nodeProps);
         for (size_t i = 0; i < winners.size(); i++) {
           std::cout << winners[i]->name << "\n";
         }
