@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <istream>
+#include <unordered_map>
 #include <vector>
 
 #include "dfs_helper.h"
