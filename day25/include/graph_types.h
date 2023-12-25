@@ -126,7 +126,10 @@ class Graph : public DFSHelper {
     }
   }
 
+  void trySolutions() {}
+
   void dfs() {
+    std::vector<std::vector<LinkProps*>> winnerScenarios;
     for (auto& node_it : nodes) {
       NodeProps& nodeProps = node_it.second;
       nodeProps.buildDFS(*this, nodeProps.node);
@@ -138,6 +141,7 @@ class Graph : public DFSHelper {
       }
       node_it.second.resetDFS();
       time = 0;
+      winnerScenarios.push_back(winners);
       winners.clear();
     }
   }
