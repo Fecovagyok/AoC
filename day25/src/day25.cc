@@ -6,7 +6,7 @@
 #include "aoc_reader.h"
 #include "graph_types.h"
 
-#define INPUT_FILE "example.txt"
+#define INPUT_FILE "input.txt"
 
 int main() {
   std::ios_base::sync_with_stdio(false);
@@ -26,8 +26,7 @@ int main() {
 
   AoCReader reader{process_line, 270, "./day25/" INPUT_FILE};
   reader.read();
-  graph.selfTest();
   graph.dfs();
-  
+
   return 0;
 }
