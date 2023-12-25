@@ -13,4 +13,5 @@ class DFSHelper {
   virtual LinkProps& getLinkProps(Link link) = 0;
   virtual uint64_t getTime() = 0;
   virtual void incTime() = 0;
+  virtual void addLinkProps(LinkProps& link) = 0;
 };

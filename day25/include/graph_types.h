@@ -1,10 +1,12 @@
 #pragma once
 
 #include <algorithm>
+#include <cstddef>
 #include <cstdint>
 #include <iostream>
 #include <istream>
 #include <unordered_set>
+#include <vector>
 
 #include "dfs_helper.h"
 #include "link.h"
@@ -15,11 +17,17 @@ struct NodeProps {
 
   // For DFS
   bool inDFS = false;
-  uint64_t discovery;
-  uint64_t lowest;
+  uint64_t discovery = -1;
+  uint64_t lowest = -1;
 
   NodeProps() { adjacents.reserve(20); }
   NodeProps(Node node) : node(node) { adjacents.reserve(20); }
+
+  void resetDFS() {
+    inDFS = false;
+    discovery = -1;
+    lowest = -1;
+  }
 
   void buildDFS(DFSHelper& graph, Node prev) {
     graph.incTime();
@@ -36,9 +44,9 @@ struct NodeProps {
         lowest = std::min(lowest, next_node.discovery);
         LinkProps& link_to_next = graph.getLinkProps(Link{node, adjacents[i]});
 
-        if (next_node.lowest > discovery)
-          std::cout << "SHould be bridge: " << link_to_next.name << " "
-                    << next_node.lowest - discovery << "\n";
+        if (next_node.lowest > discovery) {
+          graph.addLinkProps(link_to_next);
+        }
       }
     }
   }
@@ -90,10 +98,13 @@ class Graph : public DFSHelper {
     }
   }
 
+  std::vector<LinkProps*> winners;
+
   NodeProps& getNodeProps(Node node) override { return nodes[node]; }
   LinkProps& getLinkProps(Link link) override { return linkMap.at(link); }
   uint64_t getTime() override { return time; }
   void incTime() override { time++; }
+  void addLinkProps(LinkProps& link) override { winners.push_back(&link); }
 
   void selfTest() {
     if (nodes.size() != 15) {
@@ -116,7 +127,18 @@ class Graph : public DFSHelper {
   }
 
   void dfs() {
-    NodeProps& nodeProps = nodes.begin()->second;
-    nodeProps.buildDFS(*this, nodeProps.node);
+    for (auto& node_it : nodes) {
+      NodeProps& nodeProps = node_it.second;
+      nodeProps.buildDFS(*this, nodeProps.node);
+      if (winners.size() == 3) {
+        std::cout << "Baszo" << std::endl;
+        for (size_t i = 0; i < winners.size(); i++) {
+          std::cout << winners[i]->name << "\n";
+        }
+      }
+      node_it.second.resetDFS();
+      time = 0;
+      winners.clear();
+    }
   }
 };
