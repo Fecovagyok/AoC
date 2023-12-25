@@ -26,7 +26,7 @@ class Node {
   std::string toString() {
     std::string string_id(3, 0);
     for (uint32_t i = 0; i < 3; i++) {
-      string_id[i] = id & (0xf << 8 * i);
+      string_id[i] = (id >> i * 8) & 0xff;
     }
     return string_id;
   }
@@ -53,7 +53,7 @@ class Link {
            (static_cast<uint64_t>(b.getId()) >> 32);
   }
 
-  std::string toString() { return a.toString() + b.toString(); }
+  std::string toString() { return a.toString() + ' ' + b.toString(); }
 };
 
 class Graph {
