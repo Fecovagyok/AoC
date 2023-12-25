@@ -11,7 +11,6 @@ class Graph {
   LinkMap linkMap;
 
  public:
-  Graph() { linkMap.setNodeProps(&nodes); }
   void readLinkMap(std::istream& is, Node key) {
     Node node;
     NodeProps& local_nodes = nodes.emplace(key, NodeProps{key}).first->second;

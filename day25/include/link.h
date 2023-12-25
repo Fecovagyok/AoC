@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <map>
+#include <unordered_map>
 
 #include "node.h"
 
@@ -48,12 +49,4 @@ struct LinkProps {
   LinkProps(Link link) : link(link) {}
 };
 
-// Maybe this might be an index structure later
-class LinkMap {
-  std::unordered_map<Link, NodeProps> map;
-  NodePropsCont* nodeProps = nullptr;
-
- public:
-  NodeProps& operator[](Node key) { return map[key]; }
-  void setNodeProps(NodePropsCont* n) { nodeProps = n; }
-};
+using LinkMap = std::unordered_map<Link, LinkProps>;
