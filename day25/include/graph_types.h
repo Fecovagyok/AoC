@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <cstdint>
 #include <istream>
 #include <vector>
@@ -9,17 +10,26 @@ class Node {
 
  public:
   int read(std::istream& is) {
-    id = 0;
-    for (uint16_t i = 0; i < 3; i++) {
+    uint32_t local_id = 0;
+    for (uint32_t i = 0; i < 3; i++) {
       char c = is.get();
       if (!is.good() || c == '\0') {
         return -1;
       }
-      id |= (c >> (i * 8));
+      local_id |= (c << (i * 8));
     }
+    id = local_id;
     return 0;
   }
   uint32_t getId() { return id; }
+
+  std::string toString() {
+    std::string string_id(3, 0);
+    for (uint32_t i = 0; i < 3; i++) {
+      string_id[i] = id & (0xf << 8 * i);
+    }
+    return string_id;
+  }
 };
 
 class Link {
@@ -42,6 +52,8 @@ class Link {
     return static_cast<uint64_t>(a.getId()) |
            (static_cast<uint64_t>(b.getId()) >> 32);
   }
+
+  std::string toString() { return a.toString() + b.toString(); }
 };
 
 class Graph {
@@ -50,4 +62,7 @@ class Graph {
  public:
   Graph() { links.reserve(1200); }
   void insert(Link node) { links.push_back(node); }
+
+  const Link& operator[](size_t idx) const { return links[idx]; }
+  const Link& at(size_t idx) const { return links[idx]; }
 };

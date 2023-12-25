@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <cstdlib>
 #include <ios>
 #include <iostream>
@@ -14,7 +15,7 @@ int main() {
   auto process_line = [&graph](std::string& buf) {
     std::istringstream is{buf};
     Node first;
-    if (!first.read(is)) {
+    if (first.read(is)) {
       std::cout << "Baj oreg" << std::endl;
       exit(1);
     }
@@ -22,10 +23,11 @@ int main() {
     while (true) {
       is.ignore(1, ' ');
       Node other;
-      if (!other.read(is)) {
+      if (other.read(is)) {
         break;
       }
       graph.insert(Link{first, other});
+      std::cout << Link{first, other}.toString() << std::endl;
     }
   };
 
