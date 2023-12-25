@@ -44,3 +44,9 @@ struct hash<Node> {
   size_t operator()(Node n) const { return hash<uint32_t>{}(n.getId()); }
 };
 }  // namespace std
+
+struct NodeComp {
+  bool operator()(Node first, Node other) { return first < other; }
+};
+
+using NodePropsCont = std::unordered_map<Node, NodeProps>;

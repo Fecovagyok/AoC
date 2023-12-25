@@ -4,14 +4,8 @@
 #include <istream>
 #include <unordered_set>
 
+#include "dfs_helper.h"
 #include "link.h"
-
-class DFSHelper {
-  virtual NodeProps& getNodeProps(Node node) = 0;
-  virtual LinkProps& getLinkProps(Link link) = 0;
-  virtual bool currentDFSContains(Node node) = 0;
-  virtual void currentDFSInsert(Node node) = 0;
-};
 
 struct NodeProps {
   Node node;
@@ -20,13 +14,24 @@ struct NodeProps {
   NodeProps() { adjacents.reserve(20); }
   NodeProps(Node node) : node(node) { adjacents.reserve(20); }
 
-  void buildDFS(DFSHelper& graph) {}
-
+  void buildDFS(DFSHelper& graph, Node prev) {
+    if (graph.currentDFSContains(node)) {
+      LinkProps& props = graph.getLinkProps(Link{node, prev});
+      props.link_used_in_dfs--;
+      return;
+    }
+    graph.currentDFSInsert(node);
+    for (size_t i = 0; i < adjacents.size(); i++) {
+      LinkProps& link_to_next = graph.getLinkProps(Link{node, adjacents[i]});
+      link_to_next.link_used_in_dfs++;
+      NodeProps& next_node = graph.getNodeProps(adjacents[i]);
+      next_node.buildDFS(graph, node);
+    }
+  }
   bool operator<(const NodeProps& other) const { return node < other.node; }
   bool operator>(const NodeProps& other) const { return node > other.node; }
   bool operator==(const NodeProps& other) const { return node == other.node; }
 };
-
 namespace std {
 template <>
 struct hash<NodeProps> {
@@ -34,13 +39,7 @@ struct hash<NodeProps> {
 };
 }  // namespace std
 
-struct NodeComp {
-  bool operator()(Node first, Node other) { return first < other; }
-};
-
-using NodePropsCont = std::unordered_map<Node, NodeProps>;
-
-class Graph {
+class Graph : DFSHelper {
   NodePropsCont nodes;
   LinkMap linkMap;
   std::unordered_set<Node> currentDFSMap;
@@ -73,10 +72,12 @@ class Graph {
     }
   }
 
-  NodeProps& getNodeProps(Node node) { return nodes[node]; }
-  LinkProps& getLinkProps(Link link) { return linkMap[link]; }
-  bool currentDFSContains(Node node) { return currentDFSMap.count(node) == 1; }
-  void currentDFSInsert(Node node) { currentDFSMap.insert(node); }
+  NodeProps& getNodeProps(Node node) override { return nodes[node]; }
+  LinkProps& getLinkProps(Link link) override { return linkMap[link]; }
+  bool currentDFSContains(Node node) override {
+    return currentDFSMap.count(node) == 1;
+  }
+  void currentDFSInsert(Node node) override { currentDFSMap.insert(node); }
 
   void selfTest() {
     if (nodes.size() != 15) {
@@ -100,7 +101,7 @@ class Graph {
   void dfs() {
     currentDFSMap.clear();
     for (auto& node : nodes) {
-      nodes[node.second.adjacents[0]];
+      node.second.buildDFS(*this);
     }
   }
 };
