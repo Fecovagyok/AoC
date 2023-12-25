@@ -3,6 +3,8 @@
 #include <unordered_set>
 #include <vector>
 
+#include "dfs_helper.h"
+
 class Node {
   uint32_t id;
 
@@ -35,34 +37,10 @@ class Node {
 };
 
 typedef std::vector<Node> Nodes;
-struct NodeProps {
-  Node node;
-  Nodes adjacents;
-
-  NodeProps() { adjacents.reserve(20); }
-  NodeProps(Node node) : node(node) { adjacents.reserve(20); }
-
-  void buildDFS() {}
-
-  bool operator<(const NodeProps& other) const { return node < other.node; }
-  bool operator>(const NodeProps& other) const { return node > other.node; }
-  bool operator==(const NodeProps& other) const { return node == other.node; }
-};
 
 namespace std {
 template <>
 struct hash<Node> {
   size_t operator()(Node n) const { return hash<uint32_t>{}(n.getId()); }
 };
-
-template <>
-struct hash<NodeProps> {
-  size_t operator()(const NodeProps& n) const { return hash<Node>{}(n.node); }
-};
 }  // namespace std
-
-struct NodeComp {
-  bool operator()(Node first, Node other) { return first < other; }
-};
-
-using NodePropsCont = std::unordered_map<Node, NodeProps>;
