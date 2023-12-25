@@ -1,7 +1,7 @@
 #pragma once
 
-class NodeProps;
-class LinkProps;
+struct NodeProps;
+struct LinkProps;
 class Node;
 class Link;
 

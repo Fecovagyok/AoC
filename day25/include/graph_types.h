@@ -58,7 +58,7 @@ class Graph : DFSHelper {
       local_nodes.adjacents.push_back(node);
       {
         Link link{key, node};
-        linkMap[link] = LinkProps{link};
+        linkMap.emplace(link, LinkProps{link});
       }
 
       // Inserting node itself
@@ -73,7 +73,7 @@ class Graph : DFSHelper {
   }
 
   NodeProps& getNodeProps(Node node) override { return nodes[node]; }
-  LinkProps& getLinkProps(Link link) override { return linkMap[link]; }
+  LinkProps& getLinkProps(Link link) override { return linkMap.at(link); }
   bool currentDFSContains(Node node) override {
     return currentDFSMap.count(node) == 1;
   }
@@ -101,7 +101,7 @@ class Graph : DFSHelper {
   void dfs() {
     currentDFSMap.clear();
     for (auto& node : nodes) {
-      node.second.buildDFS(*this);
+      node.second.buildDFS(*this, node.second.node);
     }
   }
 };

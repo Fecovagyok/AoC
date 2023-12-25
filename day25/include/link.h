@@ -25,6 +25,7 @@ class Link {
            (static_cast<uint64_t>(b.getId()) >> 32);
   }
 
+  bool operator==(Link other) const { return getId() == other.getId(); }
   std::string toString() { return a.toString() + ' ' + b.toString(); }
   Node getA() const { return a; }
   Node getB() const { return b; }
