@@ -9,7 +9,6 @@ class Link {
   Node b;
 
  public:
-  Link() = default;
   Link(Node a, Node b) {
     if (a.getId() < b.getId()) {
       this->a = a;
@@ -22,7 +21,7 @@ class Link {
 
   uint64_t getId() const {
     return static_cast<uint64_t>(a.getId()) |
-           (static_cast<uint64_t>(b.getId()) >> 32);
+           (static_cast<uint64_t>(b.getId()) << 32);
   }
 
   bool operator==(Link other) const { return getId() == other.getId(); }
@@ -47,7 +46,8 @@ struct LinkComp {
 struct LinkProps {
   Link link;
   uint64_t link_used_in_dfs = 0;
-  LinkProps(Link link) : link(link) {}
+  std::string name;
+  LinkProps(Link link) : link(link), name(link.toString()) {}
 };
 
 using LinkMap = std::unordered_map<Link, LinkProps>;

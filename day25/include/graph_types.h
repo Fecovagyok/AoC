@@ -58,7 +58,10 @@ class Graph : DFSHelper {
       local_nodes.adjacents.push_back(node);
       {
         Link link{key, node};
-        linkMap.emplace(link, LinkProps{link});
+        if (linkMap.count(link) == 0)
+          linkMap.emplace(link, LinkProps{link});
+        else
+          std::cout << "DOes this ever happend?";
       }
 
       // Inserting node itself
@@ -99,9 +102,18 @@ class Graph : DFSHelper {
   }
 
   void dfs() {
-    currentDFSMap.clear();
     for (auto& node : nodes) {
+      currentDFSMap.clear();
       node.second.buildDFS(*this, node.second.node);
     }
+    std::vector<std::string> kalap;
+    kalap.reserve(linkMap.size());
+    for (auto& link_it : linkMap) {
+      LinkProps& link = link_it.second;
+      kalap.push_back(link.name);
+      std::cout << link.link.toString() << ": " << link.link_used_in_dfs
+                << "\n";
+    }
+    std::cout << std::endl;
   }
 };
