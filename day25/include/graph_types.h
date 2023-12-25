@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
-#include <exception>
 #include <iostream>
 #include <istream>
 #include <unordered_set>
@@ -23,17 +22,6 @@ struct NodeProps {
 
   NodeProps() { adjacents.reserve(20); }
   NodeProps(Node node) : node(node) { adjacents.reserve(20); }
-
-  void buildDFS(DFSHelper& graph, std::unordered_set<NodeProps*>& sets) {
-    inDFS = true;
-    sets.insert(this);
-    for (size_t i = 0; i < adjacents.size(); i++) {
-      NodeProps& next_node = graph.getNodeProps(adjacents[i]);
-      if (!next_node.inDFS) {
-        buildDFS(graph, sets);
-      }
-    }
-  }
 
   void resetDFS() {
     inDFS = false;
