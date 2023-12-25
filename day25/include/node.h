@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <istream>
+#include <unordered_set>
 #include <vector>
 
 class Node {
@@ -62,3 +63,5 @@ struct hash<NodeProps> {
 struct NodeComp {
   bool operator()(Node first, Node other) { return first < other; }
 };
+
+using NodePropsCont = std::unordered_set<NodeProps>;

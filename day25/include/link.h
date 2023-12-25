@@ -41,4 +41,11 @@ struct LinkComp {
   }
 };
 
-typedef std::map<Node, NodeProps> LinkMap;
+class LinkMap {
+  std::unordered_map<Node, NodeProps> map;
+  NodePropsCont* nodeProps = nullptr;
+
+ public:
+  NodeProps& operator[](Node key) { return map[key]; }
+  void setNodeProps(NodePropsCont* n) { nodeProps = n; }
+};
