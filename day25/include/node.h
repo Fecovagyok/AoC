@@ -38,13 +38,11 @@ typedef std::vector<Node> Nodes;
 struct NodeProps {
   Node node;
   Nodes adjacents;
-  bool searchProp1 = false;
-  std::string name;
 
   NodeProps() { adjacents.reserve(20); }
-  NodeProps(Node node) : node(node), name(node.toString()) {
-    adjacents.reserve(20);
-  }
+  NodeProps(Node node) : node(node) { adjacents.reserve(20); }
+
+  void buildDFS() {}
 
   bool operator<(const NodeProps& other) const { return node < other.node; }
   bool operator>(const NodeProps& other) const { return node > other.node; }

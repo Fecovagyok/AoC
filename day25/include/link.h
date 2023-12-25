@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <map>
 
 #include "node.h"
@@ -41,9 +42,15 @@ struct LinkComp {
   }
 };
 
+struct LinkProps {
+  Link link;
+  uint64_t link_used_in_dfs = 0;
+  LinkProps(Link link) : link(link) {}
+};
+
 // Maybe this might be an index structure later
 class LinkMap {
-  std::unordered_map<Node, NodeProps> map;
+  std::unordered_map<Link, NodeProps> map;
   NodePropsCont* nodeProps = nullptr;
 
  public:

@@ -53,5 +53,9 @@ class Graph {
     }
   }
 
-  void dfs() {}
+  void dfs() {
+    for (auto& node : nodes) {
+      nodes[node.second.adjacents[0]];
+    }
+  }
 };
