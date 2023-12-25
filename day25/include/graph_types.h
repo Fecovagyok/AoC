@@ -1,5 +1,7 @@
 #pragma once
 
+#include <algorithm>
+#include <cstdint>
 #include <iostream>
 #include <istream>
 #include <unordered_set>
@@ -11,19 +13,33 @@ struct NodeProps {
   Node node;
   Nodes adjacents;
 
+  // For DFS
+  bool inDFS = false;
+  uint64_t discovery;
+  uint64_t lowest;
+
   NodeProps() { adjacents.reserve(20); }
   NodeProps(Node node) : node(node) { adjacents.reserve(20); }
 
-  void buildDFS(DFSHelper& graph) {
-    graph.currentDFSInsert(node);
+  void buildDFS(DFSHelper& graph, Node prev) {
+    graph.incTime();
+    inDFS = true;
+    lowest = discovery = graph.getTime();
+
     for (size_t i = 0; i < adjacents.size(); i++) {
-      LinkProps& link_to_next = graph.getLinkProps(Link{node, adjacents[i]});
+      if (prev == adjacents[i]) continue;
       NodeProps& next_node = graph.getNodeProps(adjacents[i]);
-      if (graph.currentDFSContains(next_node.node)) {
-        continue;
+      if (next_node.inDFS) {
+        lowest = std::min(lowest, next_node.discovery);
+      } else {
+        next_node.buildDFS(graph, node);
+        lowest = std::min(lowest, next_node.discovery);
+        LinkProps& link_to_next = graph.getLinkProps(Link{node, adjacents[i]});
+
+        if (next_node.lowest > discovery)
+          std::cout << "SHould be bridge: " << link_to_next.name << " "
+                    << next_node.lowest - discovery << "\n";
       }
-      link_to_next.link_used_in_dfs++;
-      next_node.buildDFS(graph);
     }
   }
   bool operator<(const NodeProps& other) const { return node < other.node; }
@@ -37,10 +53,11 @@ struct hash<NodeProps> {
 };
 }  // namespace std
 
-class Graph : DFSHelper {
+class Graph : public DFSHelper {
   NodePropsCont nodes;
   LinkMap linkMap;
-  std::unordered_set<Node> currentDFSMap;
+
+  uint64_t time = 0;
 
  public:
   void readLinkMap(std::istream& is, Node key) {
@@ -75,10 +92,8 @@ class Graph : DFSHelper {
 
   NodeProps& getNodeProps(Node node) override { return nodes[node]; }
   LinkProps& getLinkProps(Link link) override { return linkMap.at(link); }
-  bool currentDFSContains(Node node) override {
-    return currentDFSMap.count(node) == 1;
-  }
-  void currentDFSInsert(Node node) override { currentDFSMap.insert(node); }
+  uint64_t getTime() override { return time; }
+  void incTime() override { time++; }
 
   void selfTest() {
     if (nodes.size() != 15) {
@@ -101,18 +116,7 @@ class Graph : DFSHelper {
   }
 
   void dfs() {
-    for (auto& node : nodes) {
-      currentDFSMap.clear();
-      node.second.buildDFS(*this);
-    }
-    std::vector<std::string> kalap;
-    kalap.reserve(linkMap.size());
-    for (auto& link_it : linkMap) {
-      LinkProps& link = link_it.second;
-      kalap.push_back(link.name);
-      std::cout << link.link.toString() << ": " << link.link_used_in_dfs
-                << "\n";
-    }
-    std::cout << std::endl;
+    NodeProps& nodeProps = nodes.begin()->second;
+    nodeProps.buildDFS(*this, nodeProps.node);
   }
 };
