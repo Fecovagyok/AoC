@@ -3,3 +3,5 @@ build
 .vscode
 input.txt
 aoc.code-workspace
+**/example.txt
+**/input.txt
