@@ -1,4 +1,5 @@
 #include <array>
+#include <cstddef>
 #include <cstdint>
 #include <fstream>
 #include <ios>
@@ -41,7 +42,13 @@ class MyMap {
 
  public:
   uint64_t get(uint64_t num) const { return map.get(num); }
+  Intervals get_min(const Interval& seed) const { return map.get_min(seed); }
 };
+
+inline std::ostream& operator<<(std::ostream& os, const Interval& interval) {
+  return os << "Start: " << interval.start << " "
+            << "Len: " << interval.len;
+}
 
 class MyMapList {
   std::array<MyMap, 7> maps{};
@@ -60,15 +67,25 @@ class MyMapList {
     }
     return seed_val;
   }
+
+  void test(const Intervals& seeds) const {
+    for (size_t i = 0; i < seeds.size(); i++) {
+      Intervals result = maps[0].get_min(seeds[i]);
+      for (const auto& interval : result) {
+        std::cout << interval << "\n";
+      }
+    }
+  }
 };
 
 uint64_t find_lowest_seed(const Intervals& seeds, const MyMapList& list) {
-  uint64_t min = -1;
+  list.test(seeds);
+  return 0;
 }
 
 int main() {
   std::ios_base::sync_with_stdio(false);
-  std::ifstream file{"day5/input.txt"};
+  std::ifstream file{"day5/example.txt"};
 
   Intervals seeds;
   read_seeds(seeds, file);
