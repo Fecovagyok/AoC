@@ -1,7 +1,7 @@
 #include "custom_tree.h"
 
-void recur_get_intervals(MyTreeMap* root, std::vector<Seed>& intervals,
-                         const Seed& seed) {
+void recur_get_intervals(MyTreeMap* root, std::vector<Interval>& intervals,
+                         const Interval& seed) {
   if (root == nullptr) {
     intervals.push_back(seed);
     return;

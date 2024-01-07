@@ -9,11 +9,11 @@
 
 #include "custom_tree.h"
 
-typedef std::vector<Seed> Seeds;
+typedef std::vector<Interval> Intervals;
 
-void read_seeds(Seeds& seeds, std::istream& file) {
+void read_seeds(Intervals& seeds, std::istream& file) {
   file.ignore(10, ' ');
-  Seed seed;
+  Interval seed;
   seeds.reserve(60);
 
   while (true) {
@@ -62,7 +62,7 @@ class MyMapList {
   }
 };
 
-uint64_t find_lowest_seed(const Seeds& seeds, const MyMapList& list) {
+uint64_t find_lowest_seed(const Intervals& seeds, const MyMapList& list) {
   uint64_t min = -1;
 }
 
@@ -70,7 +70,7 @@ int main() {
   std::ios_base::sync_with_stdio(false);
   std::ifstream file{"day5/input.txt"};
 
-  Seeds seeds;
+  Intervals seeds;
   read_seeds(seeds, file);
 
   MyMapList list;
