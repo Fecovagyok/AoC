@@ -69,7 +69,7 @@ class MyTreeMap {
                 recurGetIntervals(root->left, intervals, seed);
                 return;
             }
-            if (end <= entry_end) {
+            if (end <= entryEnd) {
                 recurGetIntervals(root->left, intervals,
                 {seed.start, entry.src - seed.start});
                 // add seed entry.dest : entry.dest + seed_len
@@ -82,22 +82,22 @@ class MyTreeMap {
             intervals.push_back({entry.dest, entry.len});
             recurGetIntervals(
                 root->right, intervals,
-            {entry_end, seed.len - (entry.src - seed.start) - entry.len});
+            {entryEnd, seed.len - (entry.src - seed.start) - entry.len});
             return;
         }
-        if (seed.start <= entry_end) {
+        if (seed.start <= entryEnd) {
             const uint64_t start_offset = seed.start - entry.src;
-            if (end <= entry_end) {
+            if (end <= entryEnd) {
                 intervals.push_back({entry.dest + start_offset, seed.len});
                 return;
             }
-            // end > entry_end
+            // end > entryEnd
             intervals.push_back({entry.dest + start_offset, entry.len - start_offset});
             recurGetIntervals(root->right, intervals,
-            {entry_end, seed.len - (entry.len - start_offset)});
+            {entryEnd, seed.len - (entry.len - start_offset)});
             return;
         }
-        // seed_start > entry_end
+        // seed_start > entryEnd
         recurGetIntervals(root->right, intervals, seed);
     }
 }
