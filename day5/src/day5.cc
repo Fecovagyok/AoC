@@ -98,7 +98,7 @@ uint64_t find_lowest_seed(const Intervals& seeds, const MyMapList& list) {
 
 int main() {
   std::ios_base::sync_with_stdio(false);
-  std::ifstream file{"day5/example.txt"};
+  std::ifstream file{"day5/input.txt"};
 
   Intervals seeds;
   read_seeds(seeds, file);
