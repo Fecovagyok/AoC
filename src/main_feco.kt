@@ -71,30 +71,30 @@ class MyTreeMap {
             }
             if (end <= entryEnd) {
                 recurGetIntervals(root.left, intervals,
-                {seed.start, entry.src - seed.start});
+                Interval(seed.start, entry.src - seed.start));
                 // add seed entry.dest : entry.dest + seed_len
-                intervals.push_back({entry.dest, end - entry.src});
+                intervals.add(Interval(entry.dest, end - entry.src));
                 return;
             }
             // seed.start + seed.len >= entry.src + entry.len
             recurGetIntervals(root.left, intervals,
-            {seed.start, entry.src - seed.start});
-            intervals.push_back({entry.dest, entry.len});
+            Interval(seed.start, entry.src - seed.start));
+            intervals.add(Interval(entry.dest, entry.len));
             recurGetIntervals(
                 root.right, intervals,
-            {entryEnd, seed.len - (entry.src - seed.start) - entry.len});
+            Interval(entryEnd, seed.len - (entry.src - seed.start) - entry.len));
             return;
         }
         if (seed.start <= entryEnd) {
-            const uint64_t start_offset = seed.start - entry.src;
+            val startOffset: Long = seed.start - entry.src;
             if (end <= entryEnd) {
-                intervals.push_back({entry.dest + start_offset, seed.len});
+                intervals.add(Interval(entry.dest + startOffset, seed.len));
                 return;
             }
             // end > entryEnd
-            intervals.push_back({entry.dest + start_offset, entry.len - start_offset});
+            intervals.add(Interval(entry.dest + startOffset, entry.len - startOffset));
             recurGetIntervals(root.right, intervals,
-            {entryEnd, seed.len - (entry.len - start_offset)});
+            Interval(entryEnd, seed.len - (entry.len - startOffset)));
             return;
         }
         // seed_start > entryEnd
