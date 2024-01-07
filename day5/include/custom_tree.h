@@ -1,6 +1,8 @@
 #include <cstdint>
 #include <istream>
 
+#include "common.h"
+
 struct MyTreeEntry {
   uint64_t dest = 0;
   uint64_t src = 0;
@@ -20,6 +22,7 @@ class MyTreeMap {
   void insert(const MyTreeEntry& num);
   uint64_t get(uint64_t num) const;
   void read(std::istream& file);
+  uint64_t get_min(const Seed& seed);
 
   ~MyTreeMap();
 };

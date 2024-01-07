@@ -9,11 +9,6 @@
 
 #include "custom_tree.h"
 
-struct Seed {
-  uint64_t seed_start;
-  uint64_t seed_len;
-};
-
 typedef std::vector<Seed> Seeds;
 
 void read_seeds(Seeds& seeds, std::istream& file) {
