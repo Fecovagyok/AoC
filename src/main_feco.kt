@@ -39,10 +39,10 @@ class MyTreeMap {
     }
 
     private fun recurInsert(root: MyTreeMap?, entry: MyTreeEntry): MyTreeMap {
-        if(root == null){
+        if (root == null) {
             val neue = MyTreeMap()
             neue.insert(entry)
-           return neue
+            return neue
         }
         if (entry.src < root.entry.src) {
             root.left = recurInsert(root.left, entry)
@@ -70,19 +70,24 @@ class MyTreeMap {
                 return;
             }
             if (end <= entryEnd) {
-                recurGetIntervals(root.left, intervals,
-                Interval(seed.start, entry.src - seed.start));
+                recurGetIntervals(
+                    root.left, intervals,
+                    Interval(seed.start, entry.src - seed.start)
+                );
                 // add seed entry.dest : entry.dest + seed_len
                 intervals.add(Interval(entry.dest, end - entry.src));
                 return;
             }
             // seed.start + seed.len >= entry.src + entry.len
-            recurGetIntervals(root.left, intervals,
-            Interval(seed.start, entry.src - seed.start));
+            recurGetIntervals(
+                root.left, intervals,
+                Interval(seed.start, entry.src - seed.start)
+            );
             intervals.add(Interval(entry.dest, entry.len));
             recurGetIntervals(
                 root.right, intervals,
-            Interval(entryEnd, seed.len - (entry.src - seed.start) - entry.len));
+                Interval(entryEnd, seed.len - (entry.src - seed.start) - entry.len)
+            );
             return;
         }
         if (seed.start <= entryEnd) {
@@ -93,8 +98,10 @@ class MyTreeMap {
             }
             // end > entryEnd
             intervals.add(Interval(entry.dest + startOffset, entry.len - startOffset));
-            recurGetIntervals(root.right, intervals,
-            Interval(entryEnd, seed.len - (entry.len - startOffset)));
+            recurGetIntervals(
+                root.right, intervals,
+                Interval(entryEnd, seed.len - (entry.len - startOffset))
+            );
             return;
         }
         // seed_start > entryEnd
@@ -108,7 +115,7 @@ class MyMap {
     fun read(reader: BufferedReader) {
         reader.readLine()
         var line: String? = reader.readLine()
-        while(line?.isNotEmpty() == true){
+        while (line?.isNotEmpty() == true) {
             map.read(line)
             line = reader.readLine()
         }
@@ -149,17 +156,17 @@ fun findLowestSeed(seeds: List<Interval>, list: MyMapList): Long {
 }
 
 fun main() {
-    val file = File("day5/example.txt")
+    val file = File("day5/input.txt")
 
     val seeds = mutableListOf<Interval>()
     val reader = file.bufferedReader()
     val line = reader.readLine()
     val words = line.split(" ")
-                for (i in 1 until words.size step 2) {
-                    val start = words[i].toLong()
-                    val len = words[i].toLong()
-                    seeds.add(Interval(start, len))
-                }
+    for (i in 1 until words.size step 2) {
+        val start = words[i].toLong()
+        val len = words[i + 1].toLong()
+        seeds.add(Interval(start, len))
+    }
 
     reader.readLine()
 

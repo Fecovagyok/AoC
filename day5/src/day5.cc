@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <array>
+#include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <fstream>
@@ -91,6 +92,7 @@ uint64_t find_lowest_seed(const Intervals& seeds, const MyMapList& list) {
   Intervals locations = list.findAllLocations(seeds);
   uint64_t min = -1;
   for (const Interval interval : locations) {
+    std::cout << interval << "\n";
     min = std::min(min, interval.start);
   }
   return min;
@@ -98,15 +100,24 @@ uint64_t find_lowest_seed(const Intervals& seeds, const MyMapList& list) {
 
 int main() {
   std::ios_base::sync_with_stdio(false);
-  std::ifstream file{"day5/input.txt"};
+  std::ifstream file{"day5/example.txt"};
 
   Intervals seeds;
   read_seeds(seeds, file);
 
+  auto begin = std::chrono::high_resolution_clock::now();
   MyMapList list;
   list.read(file);
 
-  std::cout << find_lowest_seed(seeds, list) << std::endl;
+  uint64_t lowest = find_lowest_seed(seeds, list);
+  auto end = std::chrono::high_resolution_clock::now();
+  auto elapsed =
+      std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin)
+          .count() /
+      1000000.0;
+
+  std::cout << lowest << "\n"
+            << "Took: " << elapsed << " milliseconds" << std::endl;
 
   return 0;
 }
