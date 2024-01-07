@@ -10,7 +10,7 @@ void recur_get_intervals(const MyTreeMap* root,
 
   const MyTreeEntry& entry = root->entry;
   const uint64_t end = seed.start + seed.len;
-  const uint64_t entry_end = entry.src + entry.src;
+  const uint64_t entry_end = entry.src + entry.len;
 
   if (seed.start < entry.src) {
     if (end < entry.src) {
