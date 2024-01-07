@@ -40,9 +40,8 @@ void recur_get_intervals(MyTreeMap* root, std::vector<Interval>& intervals,
     }
     // end > entry_end
     intervals.push_back({entry.dest + start_offset, entry.len - start_offset});
-    recur_get_intervals(
-        root->right, intervals,
-        {entry_end, seed.len - (entry.len - start_offset)});
+    recur_get_intervals(root->right, intervals,
+                        {entry_end, seed.len - (entry.len - start_offset)});
     return;
   }
   // seed_start > entry_end
