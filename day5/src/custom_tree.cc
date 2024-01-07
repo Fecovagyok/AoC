@@ -1,7 +1,6 @@
 #include "custom_tree.h"
 
 #include <cstdint>
-#include <tuple>
 
 // Suppose non-overlapping entries
 MyTreeMap* recur_insert(MyTreeMap* root, const MyTreeEntry& entry) {
