@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <istream>
+#include <vector>
 
 #include "common.h"
 
@@ -24,7 +25,7 @@ class MyTreeMap {
   void insert(const MyTreeEntry& num);
   uint64_t get(uint64_t num) const;
   void read(std::istream& file);
-  uint64_t get_min(const Seed& seed);
+  std::vector<Seed> get_min(const Seed& seed);
 
   ~MyTreeMap();
 };
