@@ -26,7 +26,8 @@ class MyTreeMap {
   void insert(const MyTreeEntry& num);
   uint64_t get(uint64_t num) const;
   void read(std::istream& file);
-  std::vector<Interval> get_min(const Interval& seed) const;
+  void addInterval(std::vector<Interval>& itervals, const Interval& seed) const;
+  std::vector<Interval> getAllInterval(const std::vector<Interval>& seed) const;
 
   ~MyTreeMap();
 };

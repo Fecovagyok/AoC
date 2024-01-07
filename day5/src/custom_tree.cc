@@ -21,10 +21,19 @@ MyTreeMap* recur_insert(MyTreeMap* root, const MyTreeEntry& entry) {
   return root;
 }
 
-std::vector<Interval> MyTreeMap::get_min(const Interval& seed) const {
-  std::vector<Interval> intervals;
+void MyTreeMap::addInterval(std::vector<Interval>& intervals,
+                            const Interval& seed) const {
   recur_get_intervals(this, intervals, seed);
-  return intervals;
+}
+
+std::vector<Interval> MyTreeMap::getAllInterval(
+    const std::vector<Interval>& seeds) const {
+  std::vector<Interval> all;
+  all.reserve(60);
+  for (const Interval& seed : seeds) {
+    addInterval(all, seed);
+  }
+  return all;
 }
 
 void MyTreeMap::insert(const MyTreeEntry& in_entry) {

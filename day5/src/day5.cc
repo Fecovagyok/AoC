@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <array>
 #include <cstddef>
 #include <cstdint>
@@ -42,7 +43,9 @@ class MyMap {
 
  public:
   uint64_t get(uint64_t num) const { return map.get(num); }
-  Intervals get_min(const Interval& seed) const { return map.get_min(seed); }
+  Intervals getIntervals(const Intervals& seed) const {
+    return map.getAllInterval(seed);
+  }
 };
 
 inline std::ostream& operator<<(std::ostream& os, const Interval& interval) {
@@ -68,19 +71,29 @@ class MyMapList {
     return seed_val;
   }
 
+  Intervals findAllLocations(const Intervals& seeds) const {
+    Intervals intervals = maps[0].getIntervals(seeds);
+    for (size_t i = 1; i < maps.size(); i++) {
+      intervals = maps[i].getIntervals(intervals);
+    }
+    return intervals;
+  }
+
   void test(const Intervals& seeds) const {
-    for (size_t i = 0; i < seeds.size(); i++) {
-      Intervals result = maps[0].get_min(seeds[i]);
-      for (const auto& interval : result) {
-        std::cout << interval << "\n";
-      }
+    auto intervals = maps[0].getIntervals(seeds);
+    for (const auto& soil : intervals) {
+      std::cout << soil << "\n";
     }
   }
 };
 
 uint64_t find_lowest_seed(const Intervals& seeds, const MyMapList& list) {
-  list.test(seeds);
-  return 0;
+  Intervals locations = list.findAllLocations(seeds);
+  uint64_t min = -1;
+  for (const Interval interval : locations) {
+    min = std::min(min, interval.start);
+  }
+  return min;
 }
 
 int main() {
