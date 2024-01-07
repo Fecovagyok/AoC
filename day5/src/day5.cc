@@ -64,16 +64,6 @@ class MyMapList {
 
 uint64_t find_lowest_seed(const Seeds& seeds, const MyMapList& list) {
   uint64_t min = -1;
-  for (const auto& seed : seeds) {
-    for (uint64_t i = seed.seed_start; i < seed.seed_start + seed.seed_len;
-         i++) {
-      uint64_t loc = list.getLocation(i);
-      if (loc < min) {
-        min = loc;
-      }
-    }
-  }
-  return min;
 }
 
 int main() {
