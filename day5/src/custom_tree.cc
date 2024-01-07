@@ -22,10 +22,49 @@ MyTreeMap* recur_insert(MyTreeMap* root, const MyTreeEntry& entry) {
 }
 
 void recur_get_intervals(MyTreeMap* root, std::vector<Seed>& intervals,
-                         const Seed& interval) {
+                         const Seed& seed) {
   if (root == nullptr) {
-    intervals.push_back(interval);
+    intervals.push_back(seed);
     return;
+  }
+
+  if (seed.seed_len == 0) return;
+
+  MyTreeEntry& entry = root->entry;
+  int64_t low_len = std::min(entry.src - seed.seed_start, seed.seed_len);
+  if (low_len > 0) {
+    recur_get_intervals(root->left, intervals,
+                        {seed.seed_start, (uint64_t)low_len});
+  }
+  uint64_t middle_start = low_len > 0 ? entry.src : entry.src - low_len;
+  int64_t middle_len =
+      seed.seed_start + seed.seed_len - (entry.src + entry.len);
+
+  if (middle_len > 0) {
+    intervals.push_back({middle_start, static_cast<uint64_t>(middle_len)});
+  }
+
+  if (seed.seed_start < entry.src) {
+    if (seed.seed_start + seed.seed_len < entry.src) {
+      recur_get_intervals(root->left, intervals, seed);
+      return;
+    }
+    if (seed.seed_start + seed.seed_len < entry.src + entry.len) {
+      recur_get_intervals(root->left, intervals,
+                          {seed.seed_start, entry.src - seed.seed_start});
+      // add seed entry.dest : entry.dest + seed_len
+      intervals.push_back(
+          {entry.dest, seed.seed_len - (entry.src - seed.seed_start)});
+      return;
+    }
+    // seed.start + seed.len >= entry.src + entry.len
+    recur_get_intervals(root->left, intervals,
+                        {seed.seed_start, entry.src - seed.seed_start});
+    intervals.push_back({entry.dest, entry.len});
+    recur_get_intervals(
+        root->right, intervals,
+        {entry.src + entry.len,
+         seed.seed_len - (entry.src - seed.seed_start) - entry.len});
   }
 }
 
@@ -49,22 +88,7 @@ uint64_t MyTreeMap::get(uint64_t num) const {
   return (num - entry.src) + entry.dest;
 }
 
-uint64_t MyTreeMap::get_min(const Seed& seed) {
-  if (seed.seed_start < entry.src) {
-    if (seed.seed_start + seed.seed_len < entry.src) {
-      if (left == nullptr) return seed;
-      return left->get_min(seed);
-    }
-    if (seed.seed_start + seed.seed_len <= entry.src + entry.len) {
-      if (left == nullptr) {
-        return 0;  // add seed [seed_start:entry.src]
-      }
-      // add seed entry.dest : entry.dest + seed_len
-      return left->get_min(seed);
-    }
-  }
-  return 0;
-}
+uint64_t MyTreeMap::get_min(const Seed& seed) {}
 
 MyTreeMap::~MyTreeMap() {
   if (left != nullptr) {

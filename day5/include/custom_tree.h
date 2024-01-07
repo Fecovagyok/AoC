@@ -17,6 +17,8 @@ class MyTreeMap {
   size_t elements = 0;
 
  public:
+  friend void recur_get_intervals(MyTreeMap* root, std::vector<Seed>& intervals,
+                                  const Seed& interval);
   friend MyTreeMap* recur_insert(MyTreeMap* root, const MyTreeEntry& entry);
   uint64_t getSrc() const { return entry.src; }
   void insert(const MyTreeEntry& num);
