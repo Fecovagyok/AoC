@@ -66,22 +66,22 @@ class MyTreeMap {
 
         if (seed.start < entry.src) {
             if (end < entry.src) {
-                recurGetIntervals(root->left, intervals, seed);
+                recurGetIntervals(root.left, intervals, seed);
                 return;
             }
             if (end <= entryEnd) {
-                recurGetIntervals(root->left, intervals,
+                recurGetIntervals(root.left, intervals,
                 {seed.start, entry.src - seed.start});
                 // add seed entry.dest : entry.dest + seed_len
                 intervals.push_back({entry.dest, end - entry.src});
                 return;
             }
             // seed.start + seed.len >= entry.src + entry.len
-            recurGetIntervals(root->left, intervals,
+            recurGetIntervals(root.left, intervals,
             {seed.start, entry.src - seed.start});
             intervals.push_back({entry.dest, entry.len});
             recurGetIntervals(
-                root->right, intervals,
+                root.right, intervals,
             {entryEnd, seed.len - (entry.src - seed.start) - entry.len});
             return;
         }
@@ -93,12 +93,12 @@ class MyTreeMap {
             }
             // end > entryEnd
             intervals.push_back({entry.dest + start_offset, entry.len - start_offset});
-            recurGetIntervals(root->right, intervals,
+            recurGetIntervals(root.right, intervals,
             {entryEnd, seed.len - (entry.len - start_offset)});
             return;
         }
         // seed_start > entryEnd
-        recurGetIntervals(root->right, intervals, seed);
+        recurGetIntervals(root.right, intervals, seed);
     }
 }
 
