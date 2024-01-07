@@ -8,7 +8,7 @@ void recur_get_intervals(MyTreeMap* root, std::vector<Seed>& intervals,
   }
 
   const MyTreeEntry& entry = root->entry;
-  const uint64_t end = seed.start + seed.seed_len;
+  const uint64_t end = seed.start + seed.len;
   const uint64_t entry_end = entry.src + entry.src;
 
   if (seed.start < entry.src) {
@@ -29,20 +29,20 @@ void recur_get_intervals(MyTreeMap* root, std::vector<Seed>& intervals,
     intervals.push_back({entry.dest, entry.len});
     recur_get_intervals(
         root->right, intervals,
-        {entry_end, seed.seed_len - (entry.src - seed.start) - entry.len});
+        {entry_end, seed.len - (entry.src - seed.start) - entry.len});
     return;
   }
   if (seed.start <= entry_end) {
     const uint64_t start_offset = seed.start - entry.src;
     if (end <= entry_end) {
-      intervals.push_back({entry.dest + start_offset, seed.seed_len});
+      intervals.push_back({entry.dest + start_offset, seed.len});
       return;
     }
     // end > entry_end
     intervals.push_back({entry.dest + start_offset, entry.len - start_offset});
     recur_get_intervals(
         root->right, intervals,
-        {entry_end, seed.seed_len - (entry.len - start_offset)});
+        {entry_end, seed.len - (entry.len - start_offset)});
     return;
   }
   // seed_start > entry_end

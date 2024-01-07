@@ -18,7 +18,7 @@ void read_seeds(Seeds& seeds, std::istream& file) {
 
   while (true) {
     file >> seed.start;
-    file >> seed.seed_len;
+    file >> seed.len;
     if (file.eof() || file.fail()) break;
     seeds.push_back(seed);
   }
