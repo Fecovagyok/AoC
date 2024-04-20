@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,6 +15,23 @@ void init_nums(Nums* nums) {
     nums->array[i] = i;
   }
   nums->size = 16;
+}
+
+bool is_among_missing(int missing[static 4], int num) {
+  for (uint16_t i = 0; i < 4; i++) {
+    if (num == missing[i]) return true;
+  }
+  return false;
+}
+
+void init_with_missing(Nums* nums, int missing[static 4]) {
+  nums->size = 12;
+  uint16_t i = 0;
+  for (int num = 0; num < 16; num++) {
+    if (is_among_missing(missing, num)) continue;
+    nums->array[i] = num;
+    i++;
+  }
 }
 
 void delete_num(Nums* nums, uint16_t idx) {
@@ -43,9 +61,18 @@ int main(void) {
   srand(SEED);
   Nums nums;
   init_nums(&nums);
-  int excercise[16];
+  int missing[4];
 
-  for (uint16_t i = 0; i < 16; i++) {
+  printf("Missing nums: ");
+  for (uint16_t i = 0; i < 4; i++) {
+    missing[i] = get_rand_next(&nums);
+    printf("%d ", missing[i]);
+  }
+  printf("\n\n");
+
+  init_with_missing(&nums, missing);
+  int excercise[12];
+  for (uint16_t i = 0; i < 12; i++) {
     excercise[i] = get_rand_next(&nums);
     printf("%d: %d\n", i, excercise[i]);
   }
