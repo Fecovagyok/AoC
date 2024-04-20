@@ -7,5 +7,3 @@ add_executable(day5
 target_include_directories(day5 PRIVATE include)
 
 add_executable(munka_proba src/proba.c)
-
-add_executable(digit_zh_2 src/proba2.c)
