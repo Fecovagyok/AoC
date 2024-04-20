@@ -5,36 +5,26 @@
 #define SEED 1
 
 typedef struct {
-  int* ptr;
+  int array[16];
   uint16_t size;
 } Nums;
 
 void init_nums(Nums* nums) {
-  nums->ptr = malloc(sizeof(int) * 16);
   for (uint16_t i = 0; i < 16; i++) {
-    nums->ptr[i] = i;
+    nums->array[i] = i;
   }
   nums->size = 16;
 }
-
-void free_nums(Nums nums) { free(nums.ptr); }
 
 void delete_num(Nums* nums, uint16_t idx) {
   if (idx >= nums->size) {
     printf("Bad\n");
     exit(1);
   }
-  uint16_t new_size = nums->size - 1;
-  int* new = malloc(sizeof(int) * new_size);
-  uint16_t new_i = 0;
-  for (uint16_t i = 0; i < nums->size; i++) {
-    if (i == idx) continue;
-    new[new_i] = nums->ptr[i];
-    new_i++;
+  for (uint16_t i = idx; i < nums->size - 1; i++) {
+    nums->array[i] = nums->array[i + 1];
   }
-  nums->size = new_size;
-  free(nums->ptr);
-  nums->ptr = new;
+  nums->size--;
 }
 
 int get_rand_next(Nums* nums) {
@@ -44,7 +34,7 @@ int get_rand_next(Nums* nums) {
     exit(1);
   }
 
-  int num = nums->ptr[random];
+  int num = nums->array[random];
   delete_num(nums, random);
   return num;
 }
@@ -59,8 +49,6 @@ int main(void) {
     excercise[i] = get_rand_next(&nums);
     printf("%d: %d\n", i, excercise[i]);
   }
-
-  free_nums(nums);
 
   return 0;
 }
