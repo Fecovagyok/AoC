@@ -4,7 +4,6 @@
 #include <iostream>
 
 int AoCReader::read() {
-  std::ios_base::sync_with_stdio(false);
   std::ifstream input{file_name};
   if (input.fail()) {
     std::cerr << "No input file bro" << std::endl;

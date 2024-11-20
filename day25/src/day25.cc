@@ -9,7 +9,6 @@
 #define INPUT_FILE "input.txt"
 
 int main() {
-  std::ios_base::sync_with_stdio(false);
   Graph graph;
   auto process_line = [&graph](std::string& buf) {
     std::istringstream is{buf};

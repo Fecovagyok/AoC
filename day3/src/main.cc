@@ -71,7 +71,7 @@ class Matrix {
   const MyString& operator[](size_t idx) const { return matrix[idx + 1]; }
   const MyString& at(size_t idx) const { return operator[](idx); }
 
-  void addRow(std::string& r) {
+  void addRow(const std::string& r) {
     if (r.size() != columns) {
       std::cerr << "Saaad" << std::endl;
       exit(EXIT_FAILURE);
