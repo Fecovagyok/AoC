@@ -20,9 +20,6 @@ message("CMAKE_CXX_FLAGS_DEBUG is ${CMAKE_CXX_FLAGS_DEBUG}")
 message("CMAKE_CXX_FLAGS_RELEASE is ${CMAKE_CXX_FLAGS_RELEASE}")
 
 add_subdirectory(aoc_reader)
-add_subdirectory(day1)
-add_subdirectory(day2)
-add_subdirectory(day3)
-add_subdirectory(day4)
-add_subdirectory(day5)
-add_subdirectory(day25)
+
+add_subdirectory(2023)
+add_subdirectory(2024)
