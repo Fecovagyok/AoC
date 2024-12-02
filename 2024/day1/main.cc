@@ -1,14 +1,12 @@
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
-int main(){
+int main() {
   std::ios_base::sync_with_stdio(false);
-  std::ifstream{"2024/day1/input.txt"};
+  std::ifstream input{"2024/day1/input.txt"};
 
-  while(true){
-
+  while (true) {
   }
 
   return 0;
 }
-
