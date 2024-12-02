@@ -14,12 +14,12 @@ int main() {
     return 1;
   }
 
-  std::vector<uint32_t> left, right;
+  std::vector<int32_t> left, right;
   left.reserve(5000);
   right.reserve(5000);
 
   while (true) {
-    uint32_t tmp_left, tmp_right;
+    int32_t tmp_left, tmp_right;
     input >> tmp_left >> tmp_right;
     if (input.eof() || input.fail()) break;
     left.push_back(tmp_left);
@@ -32,9 +32,10 @@ int main() {
   std::sort(left.begin(), left.end());
   std::sort(right.begin(), right.end());
 
-  uint64_t sum = 0;
+  uint32_t sum = 0;
   for (size_t i = 0; i < left.size(); i++) {
     sum += std::abs(left[i] - right[i]);
   }
+  std::cout << sum << std::endl;
   return 0;
 }
