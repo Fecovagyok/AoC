@@ -10,6 +10,19 @@ using Matrix = std::vector<std::vector<uint32_t>>;
 
 enum class DescendType { Descending, Ascending, Either };
 
+#define PROBLEMATIC(ascend) \
+  do {                      \
+    problematic++;          \
+    break;                  \
+  } while (0)
+
+#define VERY_PROBLEMATIC()              \
+  do {                                  \
+    if (very_problematic) return false; \
+    very_problematic = true;            \
+    break;                              \
+  } while (0)
+
 bool process_row(std::vector<uint32_t>& row, std::istream& input) {
   uint32_t in_prev;
   DescendType type = DescendType::Either;
@@ -18,6 +31,9 @@ bool process_row(std::vector<uint32_t>& row, std::istream& input) {
     std::cerr << "Baj2" << std::endl;
     std::exit(1);
   }
+  uint32_t count = 0;
+  uint32_t problematic = 0;
+  bool very_problematic = true;
   while (true) {
     uint32_t in;
     input >> in;
@@ -28,7 +44,7 @@ bool process_row(std::vector<uint32_t>& row, std::istream& input) {
     row.push_back(in);
     if (in_prev == in) {
       /* Unsafe */
-      return false;
+      VERY_PROBLEMATIC();
     }
     switch (type) {
       case DescendType::Either:
@@ -37,13 +53,12 @@ bool process_row(std::vector<uint32_t>& row, std::istream& input) {
       case DescendType::Descending:
         if (in_prev < in) {
           /* Unsafe */
-          return false;
+          PROBLEMATIC();
         }
         break;
       case DescendType::Ascending:
         if (in_prev > in) {
-          /*Unsafe*/
-          return false;
+          PROBLEMATIC();
         }
     }
     uint32_t bigger = in_prev > in ? in_prev : in;
@@ -54,6 +69,7 @@ bool process_row(std::vector<uint32_t>& row, std::istream& input) {
     }
     if (input.eof()) break;
     in_prev = in;
+    count++;
   }
   return true;
 }
