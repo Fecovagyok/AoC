@@ -5,6 +5,7 @@
 
 #include <functional>
 #include <string>
+#include <iostream>
 
 class AoCReader {
   std::string buf;
