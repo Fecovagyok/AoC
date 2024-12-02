@@ -1,5 +1,6 @@
 #include <aoc_reader.h>
 
+#include <cstddef>
 #include <cstdint>
 #include <cstdlib>
 #include <ostream>
@@ -10,22 +11,11 @@ using Matrix = std::vector<std::vector<uint32_t>>;
 
 enum class DescendType { Descending, Ascending, Either };
 
-bool process_row(std::vector<uint32_t>& row, std::istream& input) {
-  uint32_t in_prev;
+bool process_mutated_row(const std::vector<uint32_t>& row) {
   DescendType type = DescendType::Either;
-  input >> in_prev;
-  if (input.eof() || input.fail()) {
-    std::cerr << "Baj2" << std::endl;
-    std::exit(1);
-  }
-  while (true) {
-    uint32_t in;
-    input >> in;
-    if (input.fail()) {
-      std::cerr << "Baj" << std::endl;
-      std::exit(1);
-    }
-    row.push_back(in);
+  for (size_t i = 1; i < row.size(); i++) {
+    uint32_t in_prev = row[i - 1];
+    uint32_t in = row[i];
     if (in_prev == in) {
       /* Unsafe */
       return false;
@@ -52,10 +42,47 @@ bool process_row(std::vector<uint32_t>& row, std::istream& input) {
       /*Unsafe*/
       return false;
     }
-    if (input.eof()) break;
     in_prev = in;
   }
   return true;
+}
+
+std::ostream& operator<<(std::ostream& os, const std::vector<uint32_t>& vec) {
+  os << vec[0];
+  for (size_t i = 1; i < vec.size(); i++) {
+    os << " " << vec[i];
+  }
+  return os;
+}
+
+bool process_row(std::vector<uint32_t>& row, std::istream& input) {
+  if (input.eof() || input.fail()) {
+    std::cerr << "Baj2" << std::endl;
+    std::exit(1);
+  }
+  while (true) {
+    uint32_t in;
+    input >> in;
+    if (input.fail()) {
+      std::cerr << "Baj" << std::endl;
+      std::exit(1);
+    }
+    row.push_back(in);
+    if (input.eof()) break;
+  }
+  if (process_mutated_row(row)) {
+    return true;
+  }
+
+  for (size_t i = 0; i < row.size(); i++) {
+    std::vector<uint32_t> cut_row = row;
+    cut_row.erase(cut_row.begin() + i);
+    if (process_mutated_row(cut_row)) {
+      std::cout << row << " -- Safe" << " Cut: " << cut_row << "\n";
+      return true;
+    }
+  }
+  return false;
 }
 
 int main() {
@@ -67,7 +94,6 @@ int main() {
     std::istringstream input{buf};
     std::vector<uint32_t> row;
     if (process_row(row, input)) {
-      std::cout << buf << " -- Safe\n";
       count++;
     }
     if (row.size() != 0) matrix.push_back(std::move(row));
