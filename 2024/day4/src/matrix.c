@@ -9,6 +9,9 @@
 #define MATRIX_WIDTH 140
 #define MATRIX_HEIGHT 140
 
+#define XMAS "XMAS"
+#define LEN_XMAS (sizeof(XMAS) - 1)
+
 #define PADDING 4
 
 #define MATRIX_ARRAY_HEIGHT (MATRIX_WIDTH + 2 * PADDING)
