@@ -9,6 +9,5 @@ while(<$input>){
   while(/mul\((\d{1,3}),(\d{1,3})\)/g){
     $sum += int($1) * int($2);
   }
-  print "\n";
 }
 print $sum."\n";
