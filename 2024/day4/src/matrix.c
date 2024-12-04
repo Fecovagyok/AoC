@@ -38,7 +38,7 @@ void read_matrix(FILE* input) {
 #define XMAS "XMAS"
 #define LEN_XMAS (sizeof(XMAS) - 1)
 
-int calc_for_one_direction(int32_t x_start, int32_t y_start, int32_t xe,
+int calc_for_one_direction(int32_t y_start, int32_t x_start, int32_t xe,
                            int32_t ye) {
   for (size_t i = 0; i < LEN_XMAS; i++) {
     if (internal_matrix[y_start + ye * i][x_start + xe * i].letter != XMAS[i])
@@ -65,8 +65,8 @@ uint32_t count_for_one_point(size_t y, size_t x) {
 
 uint32_t count_matrix(void) {
   uint32_t sum = 0;
-  for (size_t i = PADDING; i < MATRIX_ARRAY_HEIGHT + PADDING; i++) {
-    for (size_t j = PADDING; j < MATRIX_ARRAY_WIDTH + PADDING; j++) {
+  for (size_t i = PADDING; i < MATRIX_HEIGHT + PADDING; i++) {
+    for (size_t j = PADDING; j < MATRIX_WIDTH + PADDING; j++) {
       sum += count_for_one_point(i, j);
     }
   }
