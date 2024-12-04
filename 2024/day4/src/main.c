@@ -12,6 +12,6 @@ int main(void) {
   }
 
   read_matrix(input);
-  // uint32_t count = count_matrix(matrix);
-  // printf("%u\n", count);
+  uint32_t count = count_matrix();
+  printf("%u\n", count);
 }
