@@ -20,8 +20,8 @@ static struct matrix_node internal_matrix[MATRIX_ARRAY_HEIGHT]
 static void read_row(FILE* input, size_t row) {
   assert(sizeof(struct matrix_node) == 1);
 
-  fread(&(internal_matrix[row][PADDING]), 1, 140, input);
-  fseek(input, 1, SEEK_CUR);
+  fread(&(internal_matrix[row][PADDING]), 1, MATRIX_WIDTH, input);
+  fgetc(input);
 }
 
 void read_matrix(FILE* input) {
@@ -34,9 +34,6 @@ void read_matrix(FILE* input) {
     read_row(input, i + PADDING);
   }
 }
-
-#define XMAS "XMAS"
-#define LEN_XMAS (sizeof(XMAS) - 1)
 
 int calc_for_one_direction(int32_t y_start, int32_t x_start, int32_t xe,
                            int32_t ye) {
