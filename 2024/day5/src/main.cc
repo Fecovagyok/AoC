@@ -20,6 +20,7 @@ int main() {
   };
   AoCReader reader{cb, 250, "./2024/day5/input2.txt"};
   reader.read();
+  std::cout << sum << std::endl;
 
   return 0;
 }
