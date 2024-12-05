@@ -31,10 +31,9 @@ uint32_t read_pages(std::string& pages) {
   uint32_t page;
   Pages page_storage;
   while (!input.fail()) {
-    char kalap;
     input >> page;
     page_storage.push_back(page);
-    input >> kalap;
+    if (input.get() != ',') break;
   }
   if (is_pagin_valid(page_storage)) {
     return page_storage[page_storage.size() / 2];
