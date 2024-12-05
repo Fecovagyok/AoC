@@ -48,19 +48,27 @@ int calc_for_one_direction(int32_t y_start, int32_t x_start, int32_t xe,
 }
 
 uint32_t count_for_one_point(size_t y, size_t x) {
-  uint32_t sum = 0;
-  sum += calc_for_one_direction(y, x, -1, 0);
-  sum += calc_for_one_direction(y, x, 1, 0);
-
-  sum += calc_for_one_direction(y, x, 0, -1);
-  sum += calc_for_one_direction(y, x, 0, 1);
-
-  sum += calc_for_one_direction(y, x, -1, -1);
-  sum += calc_for_one_direction(y, x, 1, 1);
-
-  sum += calc_for_one_direction(y, x, 1, -1);
-  sum += calc_for_one_direction(y, x, -1, 1);
-  return sum;
+  if (internal_matrix[y + 1][x + 1].letter != 'A') {
+    return 0;
+  }
+  const char up_left = internal_matrix[y][x].letter;
+  const char up_right = internal_matrix[y][x + 2].letter;
+  const char down_left = internal_matrix[y + 2][x].letter;
+  const char down_right = internal_matrix[y + 2][x + 2].letter;
+  if (up_left == up_right && up_left == 'S' && down_left == down_right &&
+      down_left == 'M') {
+    return 1;
+  } else if (up_left == up_right && up_left == 'M' && down_left == down_right &&
+             down_left == 'S') {
+    return 1;
+  } else if (up_left == 'M' && up_right == 'S' && down_left == up_left &&
+             up_right == down_right) {
+    return 1;
+  } else if (up_left == 'S' && up_right == 'M' && down_left == up_left &&
+             up_right == down_right) {
+    return 1;
+  }
+  return 0;
 }
 
 uint32_t count_matrix(void) {
