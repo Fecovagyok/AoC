@@ -1,11 +1,11 @@
 # Custom
-build
-.cache
-.vscode
+build/
+.cache/
+.vscode/
 input.txt
 aoc.code-workspace
 **/example.txt
-**/input.txt
+input2.txt
 
 ### IntelliJ IDEA ###
 out/
