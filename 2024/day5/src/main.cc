@@ -1,8 +1,25 @@
-#include <iostream>
+#include <cstdint>
 
 #include "aoc_reader.h"
+#include "pagin.h"
+#include "rulin.h"
 
 int main() {
-  std::cout << "kalap" << std::endl;
+  bool readin_rules = true;
+  uint32_t sum = 0;
+  auto cb = [&readin_rules, &sum](std::string& buf) {
+    if (buf.empty()) {
+      readin_rules = false;
+      return;
+    }
+    if (readin_rules) {
+      read_rules(buf);
+    } else {
+      sum += read_pages(buf);
+    }
+  };
+  AoCReader reader{cb, 250, "./2024/day5/input2.txt"};
+  reader.read();
+
   return 0;
 }
