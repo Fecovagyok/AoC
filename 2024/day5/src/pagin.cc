@@ -37,7 +37,7 @@ uint32_t read_pages(std::string& pages) {
     input >> kalap;
   }
   if (is_pagin_valid(page_storage)) {
-    return page_storage.size() / 2 + 1;
+    return page_storage[page_storage.size() / 2 + 1];
   }
   return 0;
 }
