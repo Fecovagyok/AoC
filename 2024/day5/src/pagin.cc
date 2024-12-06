@@ -46,22 +46,12 @@ struct Dependent_node {
 
 using DepPages = std::vector<Dependent_node>;
 
-class my_inner_sort_cycle_pred {
-  uint32_t param;
-  my_inner_sort_cycle_pred(uint32_t param) : param(param) {}
-
- public:
-  bool operator()(const DepPages::iterator& item) {
-    return item->page == param;
-  }
-};
-
 void my_inner_sort_cycle(Pages& independent, DepPages& dependent) {
   for (size_t i = 0; i < independent.size(); i++) {
     uint32_t page = independent[i];
     auto found = std::find_if(
         dependent.begin(), dependent.end(),
-        [page](const DepPages::iterator& item) { return item->page == page; });
+        [page](Dependent_node& item) { return item.page == page; });
     if (found == dependent.end()) continue;
 
     Pages& node_deps = found->remaining_dependencies;
