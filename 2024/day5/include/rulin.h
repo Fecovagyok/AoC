@@ -7,12 +7,15 @@
 #include <vector>
 
 using ruleset = std::vector<uint32_t>;
+using RuleMap = std::unordered_map<uint32_t, ruleset>;
 
 class Rules {
-  std::unordered_map<uint32_t, ruleset> map;
+  RuleMap map;
+  RuleMap inverse_map;
 
  public:
   const ruleset& get_rule(uint32_t key) { return map[key]; }
+  void sort_all();
   void read_rule(std::istream& input);
   static Rules& instance() {
     static Rules i;

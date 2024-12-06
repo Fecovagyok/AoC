@@ -1,5 +1,6 @@
 #include "rulin.h"
 
+#include <algorithm>
 #include <sstream>
 
 void Rules::read_rule(std::istream& input) {
@@ -8,6 +9,7 @@ void Rules::read_rule(std::istream& input) {
   input.ignore(1);
   input >> page;
   map[page].push_back(depend);
+  inverse_map[depend].push_back(page);
 }
 void read_rules(std::string& rules) {
   std::istringstream input{rules};
