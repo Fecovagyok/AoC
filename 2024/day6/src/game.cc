@@ -1,9 +1,18 @@
 #include "game.h"
 
+#include <cstddef>
 #include <cstdint>
 #include <unordered_set>
 
 #include "track.h"
+
+// Custom specialization of std::hash can be injected in namespace std.
+template <>
+struct std::hash<track_position> {
+  size_t operator()(track_position pos) const noexcept {
+    return pos.y << 8 | pos.x;
+  }
+};
 
 uint32_t run_game(MapMatrix& matrix) {
   std::unordered_set<track_position> touched;
