@@ -8,7 +8,7 @@ enum class Tile { out_of, empty, obstacle };
 #include <string>
 #include <vector>
 
-#define MAP_SIZE 130
+#define MAP_SIZE 10
 #define PADDING 1
 #define VEC_SIZE (MAP_SIZE + 2 * PADDING)
 
@@ -70,13 +70,14 @@ class Guard {
 
 class MapMatrix {
   size_t read_rows = 0;
-  map_matrix matrix;
   Guard guard;
 
   Tile char_to_tile(char c);
+  track_position saved_pos;
 
  public:
   MapMatrix();
+  map_matrix matrix;
   void read_row(std::string& buf);
   Tile guard_next_tile() {
     track_position next_pos = guard.next_tile();
@@ -85,4 +86,6 @@ class MapMatrix {
   void turn_guard_right() { guard.dir.turn_right(); }
   void move_forward() { guard.move_forward(); }
   track_position guard_current_pos() { return guard.pos; }
+  void save_guard_pos() { saved_pos = guard.pos; }
+  void load_guard_pos() { guard.pos = saved_pos; }
 };

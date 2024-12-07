@@ -4,4 +4,4 @@
 
 #include "track.h"
 
-uint32_t run_game(MapMatrix& matrix);
+uint32_t run_games(MapMatrix& matrix);
