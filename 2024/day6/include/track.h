@@ -6,7 +6,21 @@ enum class Tile { out_of, empty, obstacle };
 #include <string>
 #include <vector>
 
-using map_row = std::vector<Tile>;
+#define MAP_SIZE 10
+#define PADDING 1
+#define VEC_SIZE (MAP_SIZE + 2 * PADDING)
+
+// I don't need vector for this but nvm
+class map_row {
+  std::vector<Tile> tiles;
+  Tile& get_item(size_t i) { return tiles[i + PADDING]; }
+
+ public:
+  map_row() : tiles{VEC_SIZE, Tile::out_of} {}
+  size_t size() const { return tiles.size() - 2 * PADDING; }
+  Tile& operator[](size_t i) { return get_item(i); }
+};
+
 using map_matrix = std::vector<map_row>;
 
 struct track_position {

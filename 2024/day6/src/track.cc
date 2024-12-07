@@ -6,16 +6,7 @@
 #include <iostream>
 #include <type_traits>
 
-static constexpr size_t MAP_SIZE = 10;
-static constexpr size_t PADDING = 1;
-static constexpr size_t VEC_SIZE = MAP_SIZE + PADDING;
-
-MapMatrix::MapMatrix() {
-  matrix.reserve(VEC_SIZE);
-  for (size_t i = 0; i < VEC_SIZE; i++) {
-    matrix.emplace_back(VEC_SIZE, Tile::out_of);
-  }
-}
+MapMatrix::MapMatrix() : matrix{VEC_SIZE} {}
 
 void MapMatrix::read_row(std::string& buf) {
   assert(read_rows < VEC_SIZE);
