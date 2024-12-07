@@ -68,8 +68,8 @@ void my_inner_sort_cycle(Pages& independent, DepPages& dependent) {
     }
   }
   auto new_begin = std::remove_if(
-      dependent.begin(), dependent.end(), [](DepPages::iterator& item) {
-        return item->remaining_dependencies.size() == 0;
+      dependent.begin(), dependent.end(), [](Dependent_node& item) {
+        return item.remaining_dependencies.size() == 0;
       });
 
   dependent.erase(new_begin, dependent.end());
