@@ -15,9 +15,11 @@
 using Pages = std::vector<uint32_t>;
 
 bool is_loner_node(const ruleset& rules, const Pages& pages) {
+  Pages intersected;
+  intersected.reserve(pages.size());
   for (size_t i = 0; i < rules.size(); i++) {
     for (size_t j = 0; j < pages.size(); j++) {
-      if (rules[i] == pages[i]) return false;
+      if (rules[i] == pages[j]) break;
     }
   }
   return true;
@@ -46,18 +48,21 @@ struct Dependent_node {
 
 using DepPages = std::vector<Dependent_node>;
 
+void page_erase_is_dependent_of(uint32_t page, DepPages& dependent) {
+  for (size_t i = 0; i < dependent.size(); i++) {
+    for (size_t j = 0; j < dependent[i].remaining_dependencies.size(); j++) {
+      if (dependent[i].remaining_dependencies[j] == page) {
+        dependent[i].remaining_dependencies.erase(
+            dependent[i].remaining_dependencies.begin() + j);
+      }
+    }
+  }
+}
+
 void my_inner_sort_cycle(Pages& independent, DepPages& dependent) {
   for (size_t i = 0; i < independent.size(); i++) {
     uint32_t page = independent[i];
-    auto found = std::find_if(
-        dependent.begin(), dependent.end(),
-        [page](Dependent_node& item) { return item.page == page; });
-    if (found == dependent.end()) continue;
-
-    Pages& node_deps = found->remaining_dependencies;
-    auto found2 = std::find(node_deps.begin(), node_deps.end(), independent[i]);
-    assert(found2 != node_deps.end());
-    node_deps.erase(found2);
+    page_erase_is_dependent_of(page, dependent);
   }
 
   independent.clear();
