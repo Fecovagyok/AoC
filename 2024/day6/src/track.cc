@@ -9,9 +9,9 @@
 MapMatrix::MapMatrix() : matrix{VEC_SIZE} {}
 
 void MapMatrix::read_row(std::string& buf) {
-  assert(read_rows < VEC_SIZE);
+  assert(read_rows < MAP_SIZE);
   for (size_t i = 0; i < buf.size(); i++) {
-    map_row& row = matrix[read_rows];
+    map_row& row = matrix[read_rows + PADDING];
     assert(row.size() == buf.size());
     switch (buf[i]) {
       case '#':
@@ -21,7 +21,7 @@ void MapMatrix::read_row(std::string& buf) {
         break;
       default:
         row[i] = Tile::empty;
-        guard.look_up_by_char(buf[i], {read_rows, i});
+        guard.look_up_by_char(buf[i], {read_rows + PADDING, i});
     }
   }
   read_rows++;

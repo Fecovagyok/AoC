@@ -38,6 +38,7 @@ class Guard {
     void from_char(char c) { dir = to_direction(c); }
   };
 
+  // Padding-aware
   track_position pos;
   Direction dir;
 
