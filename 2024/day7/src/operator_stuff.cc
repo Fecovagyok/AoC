@@ -12,6 +12,12 @@ struct Equation {
   opereands ops;
 };
 
+void process_equation(const Equation& eq) {
+  const opereands& ops = eq.ops;
+  for (size_t i = 1; i < ops.size(); i++) {
+  }
+}
+
 void read_equation(std::string& buf) {
   std::istringstream input{buf};
   Equation eq;
