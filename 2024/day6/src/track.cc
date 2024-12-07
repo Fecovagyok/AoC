@@ -20,6 +20,7 @@ void MapMatrix::read_row(std::string& buf) {
         row[i] = Tile::empty;
         break;
       default:
+        row[i] = Tile::empty;
         guard.look_up_by_char(buf[i], {read_rows, i});
     }
   }
