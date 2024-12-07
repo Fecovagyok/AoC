@@ -1,10 +1,10 @@
 #include <aoc_reader.h>
 
-#include <string>
+#include "track.h"
 
 int main() {
-  Dataset matrix;
-  auto cb = [&matrix](std::string& buf) { matrix.add_row(buf); };
+  MapMatrix matrix;
+  auto cb = [&matrix](std::string& buf) { matrix.read_row(buf); };
   AoCReader reader{cb, 256, "./2024/day6/input2.txt"};
   reader.read();
   return 0;
