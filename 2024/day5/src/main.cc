@@ -18,7 +18,7 @@ int main() {
       sum += read_pages(buf);
     }
   };
-  AoCReader reader{cb, 250, "./2024/day5/input2.txt"};
+  AoCReader reader{cb, 250, "./2024/day5/input.txt"};
   reader.read();
   std::cout << sum << std::endl;
 
