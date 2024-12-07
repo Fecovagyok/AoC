@@ -63,3 +63,16 @@ void Guard::Direction::turn_right() {
       static_cast<std::underlying_type_t<direction>>(dir);
   dir = static_cast<direction>((kalap + 1) % 4);
 }
+
+track_pos_delta Guard::Direction::to_delta_pos() {
+  switch (dir) {
+    case Down:
+      return {1, 0};
+    case Left:
+      return {0, -1};
+    case Up:
+      return {-1, 0};
+    case Right:
+      return {0, 1};
+  }
+}

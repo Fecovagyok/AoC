@@ -1,5 +1,7 @@
 #pragma once
 
+#include <corecrt.h>
+
 #include <cstddef>
 enum class Tile { out_of, empty, obstacle };
 
@@ -23,8 +25,17 @@ class map_row {
 
 using map_matrix = std::vector<map_row>;
 
+struct track_pos_delta {
+  ssize_t y, x;
+};
+
 struct track_position {
   size_t y, x;
+
+  void operator+(track_pos_delta other) {
+    y = static_cast<ssize_t>(y) + other.y;
+    x = static_cast<ssize_t>(x) + other.x;
+  }
 };
 
 class Guard {
@@ -36,14 +47,21 @@ class Guard {
    public:
     void turn_right();
     void from_char(char c) { dir = to_direction(c); }
+    track_pos_delta to_delta_pos();
   };
 
   // Padding-aware
-  track_position pos;
-  Direction dir;
 
  public:
+  track_position pos;
+  Direction dir;
   void look_up_by_char(char c, track_position pos);
+  track_position next_tile() {
+    track_position pos = this->pos;
+    pos + dir.to_delta_pos();
+    return pos;
+  }
+  void move_forward() { pos + dir.to_delta_pos(); }
 };
 
 class MapMatrix {
@@ -56,4 +74,11 @@ class MapMatrix {
  public:
   MapMatrix();
   void read_row(std::string& buf);
+  Tile guard_next_tile() {
+    track_position next_pos = guard.next_tile();
+    return matrix[next_pos.y][next_pos.x];
+  }
+  void turn_guard_right() { guard.dir.turn_right(); }
+  void move_forward() { guard.move_forward(); }
+  track_position guard_current_pos() { return guard.pos; }
 };
