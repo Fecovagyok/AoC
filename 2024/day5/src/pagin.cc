@@ -14,15 +14,17 @@
 
 using Pages = std::vector<uint32_t>;
 
-bool is_loner_node(const ruleset& rules, const Pages& pages) {
+ruleset my_intersect(const ruleset& rules, const Pages& pages) {
   Pages intersected;
   intersected.reserve(pages.size());
   for (size_t i = 0; i < rules.size(); i++) {
     for (size_t j = 0; j < pages.size(); j++) {
-      if (rules[i] == pages[j]) break;
+      if (rules[i] == pages[j]) {
+        intersected.push_back(rules[i]);
+      }
     }
   }
-  return true;
+  return intersected;
 }
 
 bool is_pagin_valid(const Pages& pages) {
@@ -49,6 +51,8 @@ struct Dependent_node {
 using DepPages = std::vector<Dependent_node>;
 
 void page_erase_is_dependent_of(uint32_t page, DepPages& dependent) {
+  /* Lul I don't need the inverse map if a I am jsut liner serching everything
+   */
   for (size_t i = 0; i < dependent.size(); i++) {
     for (size_t j = 0; j < dependent[i].remaining_dependencies.size(); j++) {
       if (dependent[i].remaining_dependencies[j] == page) {
@@ -87,10 +91,11 @@ void do_my_sort(Pages& pages) {
   // Go through pages check if they're independent
   for (size_t i = 0; i < pages.size(); i++) {
     const ruleset& rules = Rules::instance().get_rule(pages[i]);
-    if (is_loner_node(rules, pages)) {
+    const ruleset intersected = my_intersect(rules, pages);
+    if (intersected.size() == 0) {
       independent.push_back(pages[i]);
     } else {
-      dependent.emplace_back(pages[i], rules);
+      dependent.emplace_back(pages[i], intersected);
     }
   }
   while (true) {
@@ -110,6 +115,9 @@ uint32_t read_pages(std::string& pages) {
     page_storage.push_back(page);
     if (input.get() != ',') break;
   }
-  do_my_sort(page_storage);
-  return page_storage[page_storage.size() / 2];
+  if (!is_pagin_valid(page_storage)) {
+    do_my_sort(page_storage);
+    return page_storage[page_storage.size() / 2];
+  }
+  return 0;
 }
