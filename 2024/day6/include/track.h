@@ -8,7 +8,7 @@ enum class Tile { out_of, empty, obstacle };
 #include <string>
 #include <vector>
 
-#define MAP_SIZE 10
+#define MAP_SIZE 130
 #define PADDING 1
 #define VEC_SIZE (MAP_SIZE + 2 * PADDING)
 
