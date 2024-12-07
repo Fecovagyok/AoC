@@ -15,9 +15,16 @@ struct std::hash<track_position> {
   }
 };
 
+template <>
+struct std::hash<Guard> {
+  size_t operator()(Guard pos) const noexcept {
+    return pos.pos.y << 10 | pos.pos.x << 2 | pos.dir.get_dir();
+  }
+};
+
 int is_guard_looped(MapMatrix& matrix) {
-  std::unordered_set<track_position> touched;
-  touched.insert(matrix.guard_current_pos());
+  std::unordered_set<Guard> touched;
+  touched.insert(matrix.get_guard());
 
   while (true) {
     Tile new_tile = matrix.guard_next_tile();
@@ -27,7 +34,7 @@ int is_guard_looped(MapMatrix& matrix) {
       break;
     } else {
       matrix.move_forward();
-      track_position pos = matrix.guard_current_pos();
+      Guard pos = matrix.get_guard();
       if (touched.find(pos) == touched.end()) {
         touched.insert(pos);
       } else {

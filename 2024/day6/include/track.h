@@ -51,14 +51,15 @@ class Guard {
    public:
     void turn_right();
     void from_char(char c) { dir = to_direction(c); }
+    enum direction get_dir() const { return dir; }
     track_pos_delta to_delta_pos();
   };
 
-  // Padding-aware
-
  public:
+  // Padding-aware but only in rows lul this is messed up
   track_position pos;
   Direction dir;
+
   void look_up_by_char(char c, track_position pos);
   track_position next_tile() {
     track_position pos = this->pos;
@@ -66,6 +67,9 @@ class Guard {
     return pos;
   }
   void move_forward() { pos + dir.to_delta_pos(); }
+  bool operator==(Guard other) const {
+    return other.pos == pos && other.dir.get_dir() == dir.get_dir();
+  }
 };
 
 class MapMatrix {
@@ -73,7 +77,7 @@ class MapMatrix {
   Guard guard;
 
   Tile char_to_tile(char c);
-  track_position saved_pos;
+  Guard saved_guard;
 
  public:
   MapMatrix();
@@ -86,6 +90,7 @@ class MapMatrix {
   void turn_guard_right() { guard.dir.turn_right(); }
   void move_forward() { guard.move_forward(); }
   track_position guard_current_pos() { return guard.pos; }
-  void save_guard_pos() { saved_pos = guard.pos; }
-  void load_guard_pos() { guard.pos = saved_pos; }
+  void save_guard_pos() { saved_guard = guard; }
+  void load_guard_pos() { guard = saved_guard; }
+  Guard get_guard() { return guard; }
 };
