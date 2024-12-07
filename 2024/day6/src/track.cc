@@ -16,6 +16,7 @@ void MapMatrix::read_row(std::string& buf) {
     switch (buf[i]) {
       case '#':
         row[i] = Tile::obstacle;
+        break;
       case '.':
         row[i] = Tile::empty;
         break;
