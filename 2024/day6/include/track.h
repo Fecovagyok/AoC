@@ -36,6 +36,10 @@ struct track_position {
     y = static_cast<ssize_t>(y) + other.y;
     x = static_cast<ssize_t>(x) + other.x;
   }
+
+  bool operator==(track_position other) const {
+    return y == other.y && x == other.x;
+  }
 };
 
 class Guard {
