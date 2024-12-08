@@ -1,24 +1,30 @@
 #include "operator_stuff.h"
 
 #include <cassert>
-#include <cstdint>
 #include <sstream>
-#include <vector>
 
-using opereands = std::vector<uint32_t>;
-
-struct Equation {
-  uint64_t result;
-  opereands ops;
-};
-
-void process_equation(const Equation& eq) {
+uint64_t process_equation(const Equation& eq) {
   const opereands& ops = eq.ops;
-  for (size_t i = 1; i < ops.size(); i++) {
+  const uint32_t num_of_ops = ops.size() - 1;
+  assert(num_of_ops < 32);
+
+  for (uint32_t i = 0; i < (1 << num_of_ops); i++) {
+    uint64_t sum = eq.ops[0];
+    for (uint32_t j = 0; j < num_of_ops; j++) {
+      if (i & (1 << j)) {
+        sum = sum + static_cast<uint64_t>(eq.ops[j + 1]);
+      } else {
+        sum *= static_cast<uint64_t>(eq.ops[j + 1]);
+      }
+    }
+    if (sum == eq.result) {
+      return sum;
+    }
   }
+  return 0;
 }
 
-void read_equation(std::string& buf) {
+Equation read_equation(std::string& buf) {
   std::istringstream input{buf};
   Equation eq;
   input >> eq.result;
@@ -33,4 +39,5 @@ void read_equation(std::string& buf) {
     input >> num;
     eq.ops.push_back(num);
   }
+  return eq;
 }
