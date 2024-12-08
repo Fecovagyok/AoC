@@ -13,3 +13,4 @@ struct Equation {
 
 Equation read_equation(std::string& buf);
 uint64_t process_equation(const Equation& eq);
+uint32_t get_max();

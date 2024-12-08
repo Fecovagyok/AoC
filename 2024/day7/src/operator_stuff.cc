@@ -1,12 +1,19 @@
 #include "operator_stuff.h"
 
+#include <algorithm>
 #include <cassert>
+#include <cstdint>
 #include <sstream>
+
+static uint32_t max;
+
+uint32_t get_max() { return max; }
 
 uint64_t process_equation(const Equation& eq) {
   const opereands& ops = eq.ops;
   const uint32_t num_of_ops = ops.size() - 1;
-  assert(num_of_ops < 32);
+  assert(num_of_ops < 12);
+  max = std::max(max, num_of_ops);
 
   for (uint32_t perm = 0; perm < (1 << num_of_ops); perm++) {
     uint64_t sum = eq.ops[0];

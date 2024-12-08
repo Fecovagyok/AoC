@@ -8,8 +8,9 @@ int main() {
     Equation eq = read_equation(buf);
     sum += process_equation(eq);
   };
-  AoCReader reader{cb, 256, "./2024/day7/input2.txt"};
+  AoCReader reader{cb, 256, "./2024/day7/input.txt"};
   reader.read();
   std::cout << sum << std::endl;
+  std::cout << get_max() << std::endl;
   return 0;
 }
