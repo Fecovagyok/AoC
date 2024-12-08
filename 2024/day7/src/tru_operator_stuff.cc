@@ -1,31 +1,10 @@
 #include "tru_operator_stuff.h"
 
 #include <cstdint>
+#include <functional>
 #include <vector>
 
-struct Operator {
-  virtual uint64_t operate(uint32_t left, uint32_t right) const = 0;
-};
-
-struct Addition : public Operator {
-  static Addition* instance() {
-    static Addition i;
-    return &i;
-  }
-  uint64_t operate(uint32_t left, uint32_t right) const override {
-    return static_cast<uint64_t>(left) + static_cast<uint64_t>(right);
-  }
-};
-
-struct Multiplication : public Operator {
-  static Multiplication* instance() {
-    static Multiplication i;
-    return &i;
-  }
-  uint64_t operate(uint32_t left, uint32_t right) const override {
-    return static_cast<uint64_t>(left) * static_cast<uint64_t>(right);
-  }
-};
+using operator_ptr = std::function<uint64_t>;
 
 using one_perm = std::vector<Operator>;
 using all_perms = std::vector<one_perm>;
