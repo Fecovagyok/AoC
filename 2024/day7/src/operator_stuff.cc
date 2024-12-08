@@ -8,13 +8,13 @@ uint64_t process_equation(const Equation& eq) {
   const uint32_t num_of_ops = ops.size() - 1;
   assert(num_of_ops < 32);
 
-  for (uint32_t i = 0; i < (1 << num_of_ops); i++) {
+  for (uint32_t perm = 0; perm < (1 << num_of_ops); perm++) {
     uint64_t sum = eq.ops[0];
-    for (uint32_t j = 0; j < num_of_ops; j++) {
-      if (i & (1 << j)) {
-        sum = sum + static_cast<uint64_t>(eq.ops[j + 1]);
+    for (uint32_t idx = 0; idx < num_of_ops; idx++) {
+      if (perm & (1 << idx)) {
+        sum = sum + static_cast<uint64_t>(eq.ops[idx + 1]);
       } else {
-        sum *= static_cast<uint64_t>(eq.ops[j + 1]);
+        sum *= static_cast<uint64_t>(eq.ops[idx + 1]);
       }
     }
     if (sum == eq.result) {
