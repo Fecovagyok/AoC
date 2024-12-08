@@ -20,7 +20,7 @@ uint64_t process_equation(const Equation& eq) {
   max = std::max(max, num_of_ops);
   Permutation perm{num_of_ops};
 
-  for (; !perm.is_end(); perm.increase_whole()) {
+  for (; true; perm.increase_whole()) {
     uint64_t sum = eq.ops[0];
     for (uint32_t idx = 0; idx < num_of_ops; idx++) {
       switch (perm.get_operation(idx)) {
@@ -39,6 +39,7 @@ uint64_t process_equation(const Equation& eq) {
     if (sum == eq.result) {
       return sum;
     }
+    if (perm.is_end()) break;
   }
   return 0;
 }

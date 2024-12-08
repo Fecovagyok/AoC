@@ -68,7 +68,7 @@ class Permutation {
     uint8_t small_idx = idx % 4;
 
     uint8_t perm = perms[big_idx];
-    return static_cast<F_Operator>((perm >> (small_idx * 2)) & 2);
+    return static_cast<F_Operator>((perm >> (small_idx * 2)) & 3);
   }
   void increase_whole() { increase_recurse(0); }
 };
