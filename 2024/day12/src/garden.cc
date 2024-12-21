@@ -18,17 +18,30 @@ static std::unordered_set<my_pair> node_set;
 
 static RegionMap map;
 
+enum enum_dir { up, left, right, down };
 struct direction {
   int16_t y;
   int16_t x;
+  enum_dir dir;
 };
 
 static const direction all_directions[] = {
-    {-1, 0},  // up
-    {0, -1},  // left
-    {0, 1},   // right
-    {1, 0},   // down
+    [up] = {-1, 0, up},       // up
+    [left] = {0, -1, left},   // left
+    [right] = {0, 1, right},  // right
+    [down] = {1, 0, down},    // down
 };
+
+static const enum_dir other_directions[] = {
+    [up] = left,
+    [left] = up,
+    [right] = up,
+    [down] = left,
+};
+
+inline static direction get_other_direction_form(const direction& dir) {
+  return all_directions[other_directions[dir.dir]];
+}
 
 static Region* find_all_those_crooked_ones(StuffedMatrix& matrix, ssize_t i,
                                            ssize_t j, char kalap) {
@@ -73,7 +86,12 @@ static void what_to_do_with_a_single_kalap(StuffedMatrix& matrix, ssize_t i,
   int16_t non_neighbour_count = 0;
   for (const direction& dir : all_directions) {
     if (matrix[i + dir.y][j + dir.x] != kalap) {
-      non_neighbour_count++;
+      const direction other = get_other_direction_form(dir);
+      char other_node = matrix[i + other.y][j + other.x];
+      if (other_node != kalap ||
+          matrix[i + dir.y + other.y][j + dir.x + other.x] == kalap) {
+        non_neighbour_count++;
+      }
     }
   }
   reg->inc_num();
