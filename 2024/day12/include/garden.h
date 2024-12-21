@@ -3,6 +3,7 @@
 #include <array>
 #include <cassert>
 #include <cstddef>
+#include <cstdint>
 #include <cstring>
 #include <string>
 
@@ -46,4 +47,5 @@ class Garden {
   Garden(StuffedMatrix& matrix) : matrix{matrix} {}
 
   void walk_garden();
+  uint64_t count_garden();
 };

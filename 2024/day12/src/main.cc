@@ -7,5 +7,8 @@ int main() {
   AoCReader reader{cb, 256, "./2024/day12/input2.txt"};
   reader.read();
   matrix.rows_end();
-  Garden{matrix}.walk_garden();
+  Garden garden{matrix};
+
+  garden.walk_garden();
+  std::cout << garden.count_garden() << std::endl;
 }

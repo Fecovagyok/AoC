@@ -1,6 +1,5 @@
 #include "garden.h"
 
-#include <array>
 #include <cstddef>
 #include <cstdint>
 
@@ -8,26 +7,30 @@
 
 static RegionMap map;
 
-static void what_to_do_with_a_single_kalap(StuffedMatrix& matrix, size_t i,
-                                           size_t j) {
+static void what_to_do_with_a_single_kalap(StuffedMatrix& matrix, ssize_t i,
+                                           ssize_t j) {
   char kalap = matrix[i][j];
   Region* reg = nullptr;
   uint16_t neighbour_count = 0;
   if (matrix[i][j - 1] == kalap) {
-    reg = &map[matrix[i][j - 1]];
+    assert(i > 0 && j > 0);
+    reg = &map.get_region(i, j - 1);
     neighbour_count++;
   }
   if (matrix[i - 1][j] == kalap) {
-    reg = &map[matrix[i - 1][j]];
+    assert(i > 0 && j > 0);
+    reg = &map.get_region(i - 1, j);
     neighbour_count++;
   }
   if (reg == nullptr) {
-    reg = &map[kalap];
+    assert(i > 0 && j > 0);
+    reg = &map.add_region();
     assert(reg->is_valid() == false);
     reg->create_new(kalap);
   }
   reg->inc_num();
   reg->add_border_num(4 - neighbour_count);
+  map.assign_region(i, j, reg);
 }
 
 void Garden::walk_garden() {
@@ -37,4 +40,12 @@ void Garden::walk_garden() {
       what_to_do_with_a_single_kalap(matrix, i, j);
     }
   }
+}
+uint64_t Garden::count_garden() {
+  uint64_t count = 0;
+  for (size_t i = 0; i < map.regions_size(); i++) {
+    Region& reg = map.get_region(i);
+    count += reg.count();
+  }
+  return count;
 }
