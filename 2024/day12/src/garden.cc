@@ -70,14 +70,14 @@ static void what_to_do_with_a_single_kalap(StuffedMatrix& matrix, ssize_t i,
     reg->create_new(kalap);
     map.assign_region(i, j, reg);
   }
-  int16_t neighbour_count = 0;
+  int16_t non_neighbour_count = 0;
   for (const direction& dir : all_directions) {
-    if (matrix[i + dir.y][j + dir.x] == kalap) {
-      neighbour_count++;
+    if (matrix[i + dir.y][j + dir.x] != kalap) {
+      non_neighbour_count++;
     }
   }
   reg->inc_num();
-  reg->add_border_num(4 - neighbour_count);
+  reg->add_border_num(non_neighbour_count);
 }
 
 void Garden::walk_garden() {
