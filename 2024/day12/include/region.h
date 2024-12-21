@@ -12,11 +12,13 @@ class Region {
 
  public:
   void inc_num() { num++; }
-  void add_border_num(uint16_t i) { border_num += i; }
+  void add_border_num(int16_t i) { border_num += i; }
   bool is_valid() const { return valid; }
   void create_new(char kalap) {
     valid = true;
     type = kalap;
+    num = 1;
+    border_num = 4;
   }
   uint64_t count() const { return num * border_num; }
 };
@@ -27,7 +29,7 @@ class RegionMap {
                                         std::vector<Region*>{140, nullptr}};
 
  public:
-  Region& get_region(size_t i, size_t j) { return *map[i][j]; }
+  Region* get_region(size_t i, size_t j) { return map[i][j]; }
   Region& add_region() { return regionPool.emplace_back(); }
   void assign_region(size_t i, size_t j, Region* reg) { map[i][j] = reg; }
   const std::list<Region>& get_regions() const { return regionPool; }
