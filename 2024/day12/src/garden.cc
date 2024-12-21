@@ -44,8 +44,7 @@ void Garden::walk_garden() {
 }
 uint64_t Garden::count_garden() {
   uint64_t count = 0;
-  for (size_t i = 0; i < map.regions_size(); i++) {
-    Region& reg = map.get_region(i);
+  for (const Region& reg : map.get_regions()) {
     count += reg.count();
   }
   return count;

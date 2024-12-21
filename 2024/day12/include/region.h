@@ -1,6 +1,7 @@
 #pragma once
 #include <cstddef>
 #include <cstdint>
+#include <list>
 #include <vector>
 
 class Region {
@@ -17,11 +18,11 @@ class Region {
     valid = true;
     type = kalap;
   }
-  uint64_t count() { return num * border_num; }
+  uint64_t count() const { return num * border_num; }
 };
 
 class RegionMap {
-  std::vector<Region> regionPool;
+  std::list<Region> regionPool;
   std::vector<std::vector<Region*>> map{140,
                                         std::vector<Region*>{140, nullptr}};
 
@@ -29,6 +30,5 @@ class RegionMap {
   Region& get_region(size_t i, size_t j) { return *map[i][j]; }
   Region& add_region() { return regionPool.emplace_back(); }
   void assign_region(size_t i, size_t j, Region* reg) { map[i][j] = reg; }
-  size_t regions_size() { return regionPool.size(); }
-  Region& get_region(size_t i) { return regionPool[i]; }
+  const std::list<Region>& get_regions() const { return regionPool; }
 };
