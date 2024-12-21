@@ -4,17 +4,17 @@
 
 class Region {
   bool valid = false;
-  char type;
-  uint32_t num;
-  uint32_t border_num;
+  char type = 0;
+  uint32_t num = 0;
+  uint32_t border_num = 0;
 
  public:
+  void inc_num() { num++; }
+  void add_border_num(uint16_t i) { border_num += i; }
   bool is_valid() const { return valid; }
   void create_new(char kalap) {
     valid = true;
     type = kalap;
-    num = 1;
-    border_num = 4;
   }
 };
 

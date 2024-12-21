@@ -41,6 +41,8 @@ class StuffedMatrix {
 
 class Garden {
   StuffedMatrix& matrix;
+
+ public:
   Garden(StuffedMatrix& matrix) : matrix{matrix} {}
 
   void walk_garden();

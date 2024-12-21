@@ -8,8 +8,8 @@
 
 static RegionMap map;
 
-static Region& what_to_do_with_a_single_kalap(StuffedMatrix& matrix, size_t i,
-                                              size_t j) {
+static void what_to_do_with_a_single_kalap(StuffedMatrix& matrix, size_t i,
+                                           size_t j) {
   char kalap = matrix[i][j];
   Region* reg = nullptr;
   uint16_t neighbour_count = 0;
@@ -26,14 +26,15 @@ static Region& what_to_do_with_a_single_kalap(StuffedMatrix& matrix, size_t i,
     assert(reg->is_valid() == false);
     reg->create_new(kalap);
   }
+  reg->inc_num();
+  reg->add_border_num(4 - neighbour_count);
 }
 
 void Garden::walk_garden() {
   for (size_t i = 0; i < matrix.size(); i++) {
     StuffedArray& row = matrix[i];
     for (size_t j = 0; j < row.size(); j++) {
-      char kalap = row[j];
-      Region& reg = what_to_do_with_a_single_kalap(matrix, i, j);
+      what_to_do_with_a_single_kalap(matrix, i, j);
     }
   }
 }

@@ -7,4 +7,5 @@ int main() {
   AoCReader reader{cb, 256, "./2024/day12/input2.txt"};
   reader.read();
   matrix.rows_end();
+  Garden{matrix}.walk_garden();
 }
