@@ -16,8 +16,8 @@ class StuffedArray {
   std::array<char, ARRAY_SIZE> kalap{PADDING_CHAR};
 
  public:
-  char& at(size_t idx) { return kalap[idx + 1]; }
-  char& operator[](size_t idx) { return at(idx); }
+  char& at(ssize_t idx) { return kalap[idx + 1]; }
+  char& operator[](ssize_t idx) { return at(idx); }
   size_t size() const { return kalap.size() - 2 * PADDING; }
 };
 
@@ -26,8 +26,8 @@ class StuffedMatrix {
   size_t curr_size = 0;
 
  public:
-  StuffedArray& at(size_t idx) { return kalap[idx + 1]; }
-  StuffedArray& operator[](size_t idx) { return at(idx); }
+  StuffedArray& at(ssize_t idx) { return kalap[idx + 1]; }
+  StuffedArray& operator[](ssize_t idx) { return at(idx); }
   size_t size() const { return kalap.size() - 2 * PADDING; }
 
   void add_row(std::string& in) {
