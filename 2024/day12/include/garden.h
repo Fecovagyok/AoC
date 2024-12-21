@@ -7,7 +7,7 @@
 #include <cstring>
 #include <string>
 
-#define MATRIX_SIZE 4
+#define MATRIX_SIZE 10
 #define PADDING 1
 #define ARRAY_SIZE (MATRIX_SIZE + 2 * PADDING)
 #define PADDING_CHAR '\0'
