@@ -4,7 +4,7 @@
 int main() {
   StuffedMatrix matrix;
   auto cb = [&matrix](std::string& buf) { matrix.add_row(buf); };
-  AoCReader reader{cb, 256, "./2024/day12/input3.txt"};
+  AoCReader reader{cb, 256, "./2024/day12/input.txt"};
   reader.read();
   matrix.rows_end();
   Garden garden{matrix};

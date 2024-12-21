@@ -63,14 +63,12 @@ static void what_to_do_with_a_single_kalap(StuffedMatrix& matrix, ssize_t i,
     node_set.clear();
     reg = find_all_those_crooked_ones(matrix, i, j, kalap);
   }
-  char balra = matrix[i][j - 1];
   if (reg == nullptr) {
     assert(i >= 0 && j >= 0);
     reg = &map.add_region();
     assert(reg->is_valid() == false);
     reg->create_new(kalap);
     map.assign_region(i, j, reg);
-    return;
   }
   int16_t neighbour_count = 0;
   for (const direction& dir : all_directions) {

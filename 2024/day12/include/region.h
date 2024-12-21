@@ -12,13 +12,11 @@ class Region {
 
  public:
   void inc_num() { num++; }
-  void add_border_num(int16_t i) { border_num += i; }
+  void add_border_num(uint16_t i) { border_num += i; }
   bool is_valid() const { return valid; }
   void create_new(char kalap) {
     valid = true;
     type = kalap;
-    num = 1;
-    border_num = 4;
   }
   uint64_t count() const { return num * border_num; }
 };
