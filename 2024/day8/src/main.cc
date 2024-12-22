@@ -7,8 +7,7 @@ extern StuffedMatrix<char> matrix;
 
 int main() {
   auto cb = [](std::string& buf) { read_row(buf); };
-  AoCReader reader{cb, 256, "./2024/day8/input2.txt"};
+  AoCReader reader{cb, 256, "./2024/day8/input2.txt", read_end};
   reader.read();
-  read_end();
   return 0;
 }

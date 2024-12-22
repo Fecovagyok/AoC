@@ -1,5 +1,6 @@
 #include "aoc_reader.h"
 
+#include <cstddef>
 #include <fstream>
 #include <iostream>
 
@@ -21,5 +22,6 @@ int AoCReader::read() {
     }
     callback(buf);
   }
+  if (end_callback != nullptr) end_callback();
   return 0;
 }
