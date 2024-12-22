@@ -24,6 +24,7 @@ message("CMAKE_C_FLAGS_DEBUG is ${CMAKE_C_FLAGS_DEBUG}")
 message("CMAKE_C_FLAGS_RELEASE is ${CMAKE_C_FLAGS_RELEASE}")
 
 add_subdirectory(aoc_reader)
+add_subdirectory(stuffed_matrix)
 
 #add_subdirectory(2023)
 add_subdirectory(2024)
