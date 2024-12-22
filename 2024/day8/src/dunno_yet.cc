@@ -5,3 +5,4 @@
 StuffedMatrix matrix;
 
 void read_row(std::string& buf) { matrix.add_row(buf); }
+void read_end() { matrix.row_end(); }
