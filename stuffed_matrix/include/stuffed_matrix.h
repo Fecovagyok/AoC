@@ -2,9 +2,7 @@
 
 #include <vector>
 
-#define PADDING_CHAR '\0'
-
-template <typename T = char, T PADDING = PADDING_CHAR, size_t PADDING_SIZE = 1>
+template <typename T, T PADDING, size_t PADDING_SIZE>
 class StuffedArray {
   std::vector<T> kalap;
 
@@ -23,7 +21,7 @@ class StuffedArray {
   typename std::vector<T>::const_iterator cend() { return kalap.cend(); }
 };
 
-template <typename T = char, T PADDING = PADDING_CHAR, size_t PADDING_SIZE = 1>
+template <typename T = char, T PADDING = '\0', size_t PADDING_SIZE = 1>
 class StuffedMatrix {
   std::vector<StuffedArray<T, PADDING, PADDING_SIZE>> kalap;
 
