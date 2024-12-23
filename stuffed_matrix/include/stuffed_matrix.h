@@ -24,6 +24,7 @@ class StuffedArray {
 template <typename T = char, T PADDING = '\0', size_t PADDING_SIZE = 1>
 class StuffedMatrix {
   std::vector<StuffedArray<T, PADDING, PADDING_SIZE>> kalap;
+  size_t tru_size = 0;
 
  public:
   explicit StuffedMatrix(size_t pref_size = 200) { kalap.reserve(pref_size); }
@@ -33,12 +34,13 @@ class StuffedMatrix {
   StuffedArray<T, PADDING, PADDING_SIZE>& operator[](ssize_t idx) {
     return at(idx);
   }
-  size_t size() const { return kalap.size() - 2 * PADDING_SIZE; }
+  size_t size() const { return tru_size; }
 
   template <class TypeCont>
   void add_row(const TypeCont& in) {
     StuffedArray<T, PADDING, PADDING_SIZE>& elem = kalap.emplace_back();
     elem.insert_back(in.cbegin(), in.cend());
+    tru_size++;
   }
 
   void row_end() {
