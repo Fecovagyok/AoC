@@ -30,8 +30,9 @@ inline static MyPoint operator+(const MyPoint& left, const MyPoint& right) {
 
 using MyPointList = std::vector<MyPoint>;
 
-MyPointList freq_map[257];
+static MyPointList freq_map[257];
 static std::unordered_set<MyPoint> a_node_set;
+static bool a_node_matrix[140][140];
 
 void read_row(std::string& buf) {
   size_t row_num = matrix.size();
@@ -46,10 +47,11 @@ void read_end() { matrix.row_end(); }
 static void add_a_node(const MyPoint& a_node) {
   if (a_node.first < 0) return;
   if (a_node.second < 0) return;
-  if (a_node.first > static_cast<ssize_t>(matrix.size())) return;
-  if (a_node.second > static_cast<ssize_t>(matrix.size())) return;
+  if (a_node.first >= static_cast<ssize_t>(matrix.size())) return;
+  if (a_node.second >= static_cast<ssize_t>(matrix.size())) return;
 
   a_node_set.insert(a_node);
+  a_node_matrix[a_node.first][a_node.second] = true;
 }
 
 static void check_freqs(const MyPointList& list) {
@@ -71,4 +73,17 @@ uint64_t do_the_stuff() {
     check_freqs(list);
   }
   return a_node_set.size();
+}
+
+#include <iostream>
+void print_debug() {
+  size_t count = 0;
+  for (size_t i = 0; i < matrix.size(); i++) {
+    for (size_t j = 0; j < matrix.size(); j++) {
+      if (a_node_matrix[i][j]) count++;
+      std::cout << (a_node_matrix[i][j] ? '#' : '.');
+    }
+    std::cout << "\n";
+  }
+  std::cout << count << std::endl;
 }
