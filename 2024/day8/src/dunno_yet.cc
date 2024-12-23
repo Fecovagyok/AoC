@@ -16,7 +16,7 @@ using MyPoint = MyCoordPoint;
 template <>
 struct std::hash<MyPoint> {
   size_t operator()(const MyPoint& point) const noexcept {
-    return point.first << 9 | point.second;
+    return point.first << 9 ^ point.second;
   }
 };
 
@@ -26,6 +26,26 @@ inline static MyPoint operator-(const MyPoint& left, const MyPoint& right) {
 
 inline static MyPoint operator+(const MyPoint& left, const MyPoint& right) {
   return MyPoint{left.first + right.first, left.second + right.second};
+}
+
+inline static bool operator>(const MyPoint& left, ssize_t right) {
+  return left.first > right && left.second > right;
+}
+
+inline static bool operator>=(const MyPoint& left, ssize_t right) {
+  return left.first >= right && left.second >= right;
+}
+
+inline static bool operator<(const MyPoint& left, ssize_t right) {
+  return left.first < right && left.second < right;
+}
+
+inline static bool operator<=(const MyPoint& left, ssize_t right) {
+  return left.first <= right && left.second <= right;
+}
+
+inline static MyPoint operator-(const MyPoint& op) {
+  return {-op.first, -op.second};
 }
 
 using MyPointList = std::vector<MyPoint>;
@@ -54,15 +74,21 @@ static void add_a_node(const MyPoint& a_node) {
   a_node_matrix[a_node.first][a_node.second] = true;
 }
 
+static void add_all_nodes_with_diff(const MyPoint& radio_node,
+                                    const MyPoint& diff) {
+  MyPoint a_node = radio_node;
+  while (a_node >= 0 && a_node < matrix.size()) {
+    a_node_set.insert(a_node);
+    a_node = radio_node + diff;
+  }
+}
+
 static void check_freqs(const MyPointList& list) {
   for (size_t i = 0; i < list.size(); i++) {
     for (size_t j = i + 1; j < list.size(); j++) {
       MyPoint diff = list[j] - list[i];
-      MyPoint a_node1 = list[i] - diff;
-      MyPoint a_node2 = list[j] + diff;
-
-      add_a_node(a_node1);
-      add_a_node(a_node2);
+      add_all_nodes_with_diff(list[j], diff);
+      add_all_nodes_with_diff(list[i], -diff);
     }
   }
 }
