@@ -79,7 +79,7 @@ static void add_all_nodes_with_diff(const MyPoint& radio_node,
   MyPoint a_node = radio_node;
   while (a_node >= 0 && a_node < matrix.size()) {
     a_node_set.insert(a_node);
-    a_node = radio_node + diff;
+    a_node = a_node + diff;
   }
 }
 
