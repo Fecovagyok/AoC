@@ -4,6 +4,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <iostream>
 #include <unordered_set>
 #include <utility>
 #include <vector>
@@ -28,20 +29,12 @@ inline static MyPoint operator+(const MyPoint& left, const MyPoint& right) {
   return MyPoint{left.first + right.first, left.second + right.second};
 }
 
-inline static bool operator>(const MyPoint& left, ssize_t right) {
-  return left.first > right && left.second > right;
-}
-
 inline static bool operator>=(const MyPoint& left, ssize_t right) {
   return left.first >= right && left.second >= right;
 }
 
 inline static bool operator<(const MyPoint& left, ssize_t right) {
   return left.first < right && left.second < right;
-}
-
-inline static bool operator<=(const MyPoint& left, ssize_t right) {
-  return left.first <= right && left.second <= right;
 }
 
 inline static MyPoint operator-(const MyPoint& op) {
@@ -64,21 +57,12 @@ void read_row(std::string& buf) {
 }
 void read_end() { matrix.row_end(); }
 
-static void add_a_node(const MyPoint& a_node) {
-  if (a_node.first < 0) return;
-  if (a_node.second < 0) return;
-  if (a_node.first >= static_cast<ssize_t>(matrix.size())) return;
-  if (a_node.second >= static_cast<ssize_t>(matrix.size())) return;
-
-  a_node_set.insert(a_node);
-  a_node_matrix[a_node.first][a_node.second] = true;
-}
-
 static void add_all_nodes_with_diff(const MyPoint& radio_node,
                                     const MyPoint& diff) {
   MyPoint a_node = radio_node;
   while (a_node >= 0 && a_node < matrix.size()) {
     a_node_set.insert(a_node);
+    a_node_matrix[a_node.first][a_node.second] = true;
     a_node = a_node + diff;
   }
 }
@@ -101,7 +85,6 @@ uint64_t do_the_stuff() {
   return a_node_set.size();
 }
 
-#include <iostream>
 void print_debug() {
   size_t count = 0;
   for (size_t i = 0; i < matrix.size(); i++) {

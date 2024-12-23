@@ -8,6 +8,6 @@ int main() {
   AoCReader reader{cb, 256, "./2024/day8/input.txt", read_end};
   reader.read();
   std::cout << do_the_stuff() << std::endl;
-  print_debug();
+  // print_debug();
   return 0;
 }
