@@ -27,4 +27,5 @@ add_subdirectory(aoc_reader)
 add_subdirectory(stuffed_matrix)
 
 #add_subdirectory(2023)
-add_subdirectory(2024)
+#add_subdirectory(2024)
+add_subdirectory(2025)
