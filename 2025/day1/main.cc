@@ -4,7 +4,7 @@
 #include "aoc_reader.h"
 
 int main() {
-  unsigned long rot = ((ULONG_MAX / 2) / 100) + 50;
+  unsigned long rot = (((ULONG_MAX / 2) / 100) * 100) + 50;
   unsigned long count = 0;
   auto cb = [&rot, &count](std::string& line) {
     if (line.length() < 2) {
@@ -27,7 +27,7 @@ int main() {
       count++;
     }
   };
-  AoCReader aoc_reader{cb, 5, "2025/day1/input1.txt"};
+  AoCReader aoc_reader{cb, 5, "2025/day1/input.txt"};
   aoc_reader.read();
 
   std::cout << count << std::endl;
