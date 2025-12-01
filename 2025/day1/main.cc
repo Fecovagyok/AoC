@@ -26,7 +26,7 @@ int main() {
       count++;
     }
   };
-  AoCReader aoc_reader{cb, 5, "2025/day1/input1.txt"};
+  AoCReader aoc_reader{cb, 5, "2025/day1/input.txt"};
   aoc_reader.read();
 
   std::cout << count << std::endl;
