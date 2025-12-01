@@ -14,20 +14,22 @@ int main() {
     char rotDirection = line[0];
     const std::string substring = line.substr(1);
     unsigned long val = std::stoul(substring);
+    unsigned long howMany100s = val / 100;
+    bool hundredOverFlow;
     if (rotDirection == 'L') {
+      hundredOverFlow = rot % 100 - val % 100 > 100;
       rot -= val;
     } else if (rotDirection == 'R') {
+      hundredOverFlow = rot % 100 + val % 100 >= 100;
       rot += val;
     } else {
       std::cerr << "WTF2" << std::endl;
       return;
     }
-    std::cout << line << ": " << rot << std::endl;
-    if (rot % 100 == 0) {
-      count++;
-    }
+    std::cout << line << ": " << rot << " Count: " << count << std::endl;
+    count += hundredOverFlow ? 1 + howMany100s : howMany100s;
   };
-  AoCReader aoc_reader{cb, 5, "2025/day1/input.txt"};
+  AoCReader aoc_reader{cb, 5, "2025/day1/input1.txt"};
   aoc_reader.read();
 
   std::cout << count << std::endl;
