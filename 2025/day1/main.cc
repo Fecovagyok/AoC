@@ -27,9 +27,9 @@ int main() {
       return;
     }
     count += hundredOverFlow ? 1 + howMany100s : howMany100s;
-    std::cout << line << ": " << rot << " Count: " << count << std::endl;
+    std::cout << line << ": " << rot % 100 << " Count: " << count << std::endl;
   };
-  AoCReader aoc_reader{cb, 5, "2025/day1/input1.txt"};
+  AoCReader aoc_reader{cb, 5, "2025/day1/input.txt"};
   aoc_reader.read();
 
   std::cout << count << std::endl;
