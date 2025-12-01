@@ -1,3 +1,5 @@
+#include <string>
+
 #include "aoc_reader.h"
 
 int main() {
@@ -9,8 +11,8 @@ int main() {
       return;
     }
     char rotDirection = line[0];
-    int val = line.length() == 2 ? line[1] - '0'
-                                 : (line[1] - '0') * 10 + line[2] - '0';
+    const std::string substring = line.substr(1);
+    int val = std::stoi(substring);
     if (rotDirection == 'L') {
       rot -= val;
     } else if (rotDirection == 'R') {
@@ -24,7 +26,7 @@ int main() {
       count++;
     }
   };
-  AoCReader aoc_reader{cb, 159, "2025/day1/input1.txt"};
+  AoCReader aoc_reader{cb, 5, "2025/day1/input1.txt"};
   aoc_reader.read();
 
   std::cout << count << std::endl;
