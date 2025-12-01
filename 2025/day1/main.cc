@@ -26,8 +26,8 @@ int main() {
       std::cerr << "WTF2" << std::endl;
       return;
     }
-    std::cout << line << ": " << rot << " Count: " << count << std::endl;
     count += hundredOverFlow ? 1 + howMany100s : howMany100s;
+    std::cout << line << ": " << rot << " Count: " << count << std::endl;
   };
   AoCReader aoc_reader{cb, 5, "2025/day1/input1.txt"};
   aoc_reader.read();
