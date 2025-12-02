@@ -1,3 +1,11 @@
+#include <processthreadsapi.h>
+#include <realtimeapiset.h>
+#include <winnt.h>
+#ifdef __WIN32__
+#include <windows.h>
+#define MEASURING_STUFF
+#endif
+
 #include <cstdint>
 #include <format>
 #include <fstream>
@@ -72,5 +80,20 @@ int main() {
     std::cerr << "HMmm" << std::endl;
     return 1;
   }
-  return process_input(input);
+
+#ifdef MEASURING_STUFF
+  HANDLE hTread = GetCurrentThread();
+  ULONG64 startCycles = 0;
+  ULONG64 endCycles = 0;
+  QueryThreadCycleTime(hTread, &startCycles);
+#endif
+
+  int ret = process_input(input);
+
+#ifdef MEASURING_STUFF
+  QueryThreadCycleTime(hTread, &endCycles);
+  std::cout << "Measured: " << (endCycles - startCycles) << std::endl;
+#endif
+
+  return ret;
 }
