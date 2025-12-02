@@ -1,6 +1,3 @@
-#include <processthreadsapi.h>
-#include <realtimeapiset.h>
-#include <winnt.h>
 #ifdef __WIN32__
 #include <windows.h>
 #define MEASURING_STUFF
