@@ -18,6 +18,18 @@ struct Range {
   fInt end;
 };
 
+using IType = std::string::size_type;
+
+bool check_string_pattern(const std::string_view str,
+                          const std::string_view pattern) {
+  for (IType i = 0; i < str.length(); i += pattern.size()) {
+    if (str.substr(i, pattern.size()) != pattern) {
+      return false;
+    }
+  }
+  return true;
+}
+
 bool process_number(fInt num) {
   auto num_str = std::to_string(num);
   std::string_view num_view{num_str};
@@ -26,11 +38,10 @@ bool process_number(fInt num) {
     if (num_view.length() % i != 0) {
       continue;
     }
-    std::string_view pattern_view = num_view.substr(0, i);
-    std::string pattern_format = std::format("^(?:{})+$", pattern_view);
-    std::regex pattern{pattern_format};
-    std::smatch match;
-    bool matched = std::regex_match(num_str, match, pattern);
+    std::string_view pattern = num_view.substr(0, i);
+    std::string_view remaining = num_view.substr(i);
+    bool matched = check_string_pattern(remaining, pattern);
+
     if (matched) {
       return true;
     }
