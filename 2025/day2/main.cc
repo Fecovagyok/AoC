@@ -1,6 +1,8 @@
 #include <cstdint>
+#include <format>
 #include <fstream>
 #include <iostream>
+#include <regex>
 #include <string>
 #include <string_view>
 
@@ -14,11 +16,21 @@ struct Range {
 bool process_number(fInt num) {
   auto num_str = std::to_string(num);
   std::string_view num_view{num_str};
-  if (num_view.length() % 2 == 1) {
-    return false;
+  using IType = std::string::size_type;
+  for (IType i = 1; i - 1 < num_str.length() / 2; i++) {
+    if (num_view.length() % i != 0) {
+      continue;
+    }
+    std::string_view pattern_view = num_view.substr(0, i);
+    std::string pattern_format = std::format("^(?:{})+$", pattern_view);
+    std::regex pattern{pattern_format};
+    std::smatch match;
+    bool matched = std::regex_match(num_str, match, pattern);
+    if (matched) {
+      return true;
+    }
   }
-  return num_view.substr(0, num_view.length() / 2) ==
-         num_view.substr(num_view.length() / 2);
+  return false;
 }
 
 uint64_t process_range(Range range) {
@@ -55,7 +67,7 @@ int process_input(std::ifstream& input) {
 }
 
 int main() {
-  std::ifstream input{"2025/day2/input.txt"};
+  std::ifstream input{"2025/day2/input1.txt"};
   if (!input.is_open()) {
     std::cerr << "HMmm" << std::endl;
     return 1;
