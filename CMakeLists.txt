@@ -11,7 +11,7 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
-set(COMMON_FLAGS "-flto -Wall -Wextra -Wpedantic")
+set(COMMON_FLAGS "-flto -Wall -Wextra -Wpedantic -Werror")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_FLAGS}")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMMON_FLAGS}")
 
