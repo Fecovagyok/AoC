@@ -89,7 +89,7 @@ int main() {
 
 #ifdef MEASURING_STUFF
   QueryThreadCycleTime(hTread, &endCycles);
-  std::cout << "Measured: " << (endCycles - startCycles) << std::endl;
+  std::cout << (endCycles - startCycles) << std::endl;
 #endif
 
   return ret;
