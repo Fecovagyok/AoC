@@ -4,7 +4,7 @@
 #include <string>
 #include <string_view>
 
-using fInt = unsigned long;
+using fInt = uint64_t;
 
 struct Range {
   fInt start;
@@ -55,7 +55,7 @@ int process_input(std::ifstream& input) {
 }
 
 int main() {
-  std::ifstream input{"2025/day2/input1.txt"};
+  std::ifstream input{"2025/day2/input.txt"};
   if (!input.is_open()) {
     std::cerr << "HMmm" << std::endl;
     return 1;
