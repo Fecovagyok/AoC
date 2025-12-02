@@ -11,28 +11,22 @@ struct Range {
   fInt end;
 };
 
-uint64_t process_number(fInt num) {
-  uint64_t sum = 0;
+bool process_number(fInt num) {
   auto num_str = std::to_string(num);
   std::string_view num_view{num_str};
-  using IType = std::string::size_type;
-  for (IType i = 0; i < num_str.length() / 2; i++) {
-    for (IType j = 1; j - 1 < num_str.length() / 2 - i; j++) {
-      std::string_view pattern = num_view.substr(i, j);
-      std::string_view candidate = num_view.substr(i + j, j);
-      IType idx = candidate.find(pattern);
-      if (idx != std::string_view::npos) {
-        sum += num;
-      }
-    }
+  if (num_view.length() % 2 == 1) {
+    return false;
   }
-  return sum;
+  return num_view.substr(0, num_view.length() / 2) ==
+         num_view.substr(num_view.length() / 2);
 }
 
 uint64_t process_range(Range range) {
   uint64_t sum = 0;
   for (; range.start <= range.end; range.start++) {
-    sum += process_number(range.start);
+    if (process_number(range.start)) {
+      sum += range.start;
+    }
   }
   return sum;
 }
