@@ -1,2 +1,2 @@
-add_library(stuffed_matrix src/matrix.cc)
-target_include_directories(stuffed_matrix PUBLIC include)
+add_library(stuffed_matrix INTERFACE)
+target_include_directories(stuffed_matrix INTERFACE include)
