@@ -51,7 +51,7 @@ int main() {
     uint64_t big_num = process_line(line);
     sum += big_num;
   };
-  AoCReader reader{cb, 1024, "input1.txt"};
+  AoCReader reader{cb, 1024, "input.txt"};
   reader.read();
   std::cout << sum << std::endl;
   return 0;
