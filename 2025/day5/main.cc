@@ -17,28 +17,12 @@ void add_range(uint64_t start, uint64_t end) {
 }
 
 bool is_inside(uint64_t ing_id) {
-  size_t i = ranges.size() / 2;
-  size_t start = 0;
-  size_t after_end = ranges.size();
-  while (true) {
-    if (after_end - start <= 1) {
-      return ing_id >= ranges.at(i).start && ing_id <= ranges.at(i).end;
-    }
-    if (ing_id < ranges.at(i).start) {
-      after_end = i;
-      i = (after_end + start) / 2;
-      continue;
-    }
-    if (ing_id <= ranges.at(i).end) {
+  for (size_t i = 0; i < ranges.size(); i++) {
+    if (ing_id >= ranges[i].start && ing_id <= ranges[i].end) {
       return true;
     }
-    start = i + 1;
-    i = (after_end + start) / 2;
   }
-}
-
-bool comparator(const Range& lhs, const Range& rhs) {
-  return lhs.start < rhs.start;
+  return false;
 }
 
 int main() {
@@ -50,7 +34,6 @@ int main() {
   auto cb = [&ranges_reading, &pattern, &match, &count](std::string& line) {
     if (line.empty()) {
       ranges_reading = false;
-      std::sort(ranges.begin(), ranges.end(), comparator);
       return;
     }
     if (ranges_reading) {
