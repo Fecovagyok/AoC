@@ -54,7 +54,7 @@ int main() {
       }
     }
   };
-  AoCReader reader{cb, 200, "2025/day5/input1.txt"};
+  AoCReader reader{cb, 200, "2025/day5/input.txt"};
   reader.read();
   std::cout << count << std::endl;
   return 0;
