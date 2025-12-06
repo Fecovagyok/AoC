@@ -6,98 +6,106 @@
 #include <sstream>
 #include <string>
 
-struct Operation {
-  uint64_t operand1;
-  uint64_t operand2;
-  uint64_t operand3;
-  uint64_t operand4;
-  enum class _operator { NOTHING, ADDITION, MULTIPLICATION };
-  _operator _operator;
+#define OPERANDS \
+  /*X(1, 1000)*/ \
+  X(2, 100)      \
+  X(3, 10)       \
+  X(4, 1)
+
+struct MyChar {
+  int len;
+  char buf[15];
 };
 
-using MyEverything = std::array<Operation, 4096>;
+constexpr int lines = 3;
+constexpr char ADDITION = '+';
+constexpr char MULTIP = '*';
 
-void process_operand(MyEverything& everything, uint64_t Operation::* operand,
-                     std::string& line) {
-  std::istringstream is{line};
-  int count = 0;
-  while (!is.eof()) {
-    uint64_t num;
-    is >> num;
-    if (is.bad() || is.fail()) {
-      break;
+std::string pre_everything[lines];
+
+char operations[1000];
+
+void read_operand(int operand, std::string& line) {
+  pre_everything[operand] = line;
+  return;
+}
+
+void process_operands() {
+  using IType = std::string::size_type;
+  for (IType column = 0; true; column++) {
+    bool numbers_started[lines] = {};
+    uint32_t column_ends[lines];
+    for (int row = 0; row < lines; row++) {
+      char val = pre_everything[row][column];
+      if (numbers_started[row]) {
+        if (isspace(val)) {
+          // Next number
+          numbers_started[row] = false;
+        } else {
+        }
+      } else {
+        if (!isspace(val)) {
+          numbers_started[row] = true;
+        }
+      }
     }
-    everything[count++].*operand = num;
   }
 }
 
-Operation convert_operation(const Operation& op) {}
-
-void process_operation(MyEverything& everything, std::string& line) {
+void process_operation(std::string& line) {
   using IType = std::string::size_type;
   int count = 0;
   for (IType i = 0; i < line.size(); i++) {
-    if (line[i] == '+') {
-      everything[count++]._operator = Operation::_operator::ADDITION;
-    }
-    if (line[i] == '*') {
-      everything[count++]._operator = Operation::_operator::MULTIPLICATION;
+    if (!isspace(line[i])) {
+      operations[count++] = line[i];
     }
   }
 }
 
-void process_everything(MyEverything& old, MyEverything& current) {
-  for (int i = 0; old[i]._operator != Operation::_operator::NOTHING; i++) {
-    unsigned char nums[64];
-    Operation& old_op = old[i];
-    current[i]._operator = old_op._operator;
-    uint64_t most_sig = old_op.operand1;
-    for (uint64_t j = 0; most_sig > 0; j++) {
-      uint64_t num = most_sig % 10;
-      most_sig /= 10;
-    }
-  }
-}
-
-void process_all_operations(MyEverything& everything) {
-  uint64_t result = 0;
-  for (int i = 0; everything[i]._operator != Operation::_operator::NOTHING;
+void process_everything() {
+  uint64_t grand_total = 0;
+  for (int i = 0; everyting[i]._operator != Operation::_operator::NOTHING;
        i++) {
-    if (everything[i]._operator == Operation::_operator::ADDITION) {
-      result += everything[i].operand1 + everything[i].operand2 +
-                everything[i].operand3 + everything[i].operand4;
-    } else {
-      result += everything[i].operand1 * everything[i].operand2 *
-                everything[i].operand3 * everything[i].operand4;
-    }
+    uint64_t op_result =
+        everyting[i]._operator == Operation::_operator::ADDITION ? 0 : 1;
+    for (int count = 0; true; count++) {
+      Operation& ops = everyting[i];
+      uint32_t num_result = 0;
+#define X(num, mul)                                                         \
+  if (count < ops.operand##num.len && ops.operand##num.buf[count] != ' ') { \
+    uint32_t val =                                                          \
+        ops.operand##num.buf[ops.operand##num.len - count - 1] - '0';       \
+    num_result = 10 * num_result + val;                                     \
   }
-  std::cout << result << std::endl;
+      OPERANDS
+#undef X
+      if (num_result == 0) {
+        break;
+      }
+      if (everyting[i]._operator == Operation::_operator::ADDITION) {
+        op_result += num_result;
+      } else {
+        op_result *= num_result;
+      }
+    }
+    grand_total += op_result;
+  }
+  std::cout << grand_total << std::endl;
 }
 
 int main() {
-  MyEverything pre_everything = {};
   int cnt = 0;
-  auto cb = [&pre_everything, &cnt](std::string& line) {
-    switch (cnt) {
-      case 0:
-        process_operand(pre_everything, &Operation::operand1, line);
-        break;
-      case 1:
-        process_operand(pre_everything, &Operation::operand2, line);
-        break;
-      case 2:
-        process_operand(pre_everything, &Operation::operand3, line);
-      case 3:
-        process_operand(pre_everything, &Operation::operand4, line);
-      default:
-        process_operation(pre_everything, line);
-        break;
+  auto cb = [&cnt](std::string& line) {
+    if (cnt < lines) {
+      read_operand(cnt, line);
+    } else {
+      process_operation(line);
     }
     cnt++;
   };
-  AoCReader reader{cb, 4096, "2025/day6/input.txt"};
+  AoCReader reader{cb, 4096, "2025/day6/input1.txt"};
   reader.read();
-  MyEverything everything = {};
-  process_all_operations(pre_everything);
+  process_operands();
+  process_everything();
   return 0;
 }
