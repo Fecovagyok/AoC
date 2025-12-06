@@ -31,6 +31,8 @@ void process_operand(MyEverything& everything, uint64_t Operation::* operand,
   }
 }
 
+Operation convert_operation(const Operation& op) {}
+
 void process_operation(MyEverything& everything, std::string& line) {
   using IType = std::string::size_type;
   int count = 0;
@@ -40,6 +42,19 @@ void process_operation(MyEverything& everything, std::string& line) {
     }
     if (line[i] == '*') {
       everything[count++]._operator = Operation::_operator::MULTIPLICATION;
+    }
+  }
+}
+
+void process_everything(MyEverything& old, MyEverything& current) {
+  for (int i = 0; old[i]._operator != Operation::_operator::NOTHING; i++) {
+    unsigned char nums[64];
+    Operation& old_op = old[i];
+    current[i]._operator = old_op._operator;
+    uint64_t most_sig = old_op.operand1;
+    for (uint64_t j = 0; most_sig > 0; j++) {
+      uint64_t num = most_sig % 10;
+      most_sig /= 10;
     }
   }
 }
@@ -60,28 +75,29 @@ void process_all_operations(MyEverything& everything) {
 }
 
 int main() {
-  MyEverything everything = {};
+  MyEverything pre_everything = {};
   int cnt = 0;
-  auto cb = [&everything, &cnt](std::string& line) {
+  auto cb = [&pre_everything, &cnt](std::string& line) {
     switch (cnt) {
       case 0:
-        process_operand(everything, &Operation::operand1, line);
+        process_operand(pre_everything, &Operation::operand1, line);
         break;
       case 1:
-        process_operand(everything, &Operation::operand2, line);
+        process_operand(pre_everything, &Operation::operand2, line);
         break;
       case 2:
-        process_operand(everything, &Operation::operand3, line);
+        process_operand(pre_everything, &Operation::operand3, line);
       case 3:
-        process_operand(everything, &Operation::operand4, line);
+        process_operand(pre_everything, &Operation::operand4, line);
       default:
-        process_operation(everything, line);
+        process_operation(pre_everything, line);
         break;
     }
     cnt++;
   };
   AoCReader reader{cb, 4096, "2025/day6/input.txt"};
   reader.read();
-  process_all_operations(everything);
+  MyEverything everything = {};
+  process_all_operations(pre_everything);
   return 0;
 }
