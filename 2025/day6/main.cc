@@ -10,6 +10,7 @@ struct Operation {
   uint64_t operand1;
   uint64_t operand2;
   uint64_t operand3;
+  uint64_t operand4;
   enum class _operator { NOTHING, ADDITION, MULTIPLICATION };
   _operator _operator;
 };
@@ -49,10 +50,10 @@ void process_all_operations(MyEverything& everything) {
        i++) {
     if (everything[i]._operator == Operation::_operator::ADDITION) {
       result += everything[i].operand1 + everything[i].operand2 +
-                everything[i].operand3;
+                everything[i].operand3 + everything[i].operand4;
     } else {
       result += everything[i].operand1 * everything[i].operand2 *
-                everything[i].operand3;
+                everything[i].operand3 * everything[i].operand4;
     }
   }
   std::cout << result << std::endl;
@@ -71,13 +72,15 @@ int main() {
         break;
       case 2:
         process_operand(everything, &Operation::operand3, line);
+      case 3:
+        process_operand(everything, &Operation::operand4, line);
       default:
         process_operation(everything, line);
         break;
     }
     cnt++;
   };
-  AoCReader reader{cb, 4096, "2025/day6/input1.txt"};
+  AoCReader reader{cb, 4096, "2025/day6/input.txt"};
   reader.read();
   process_all_operations(everything);
   return 0;
