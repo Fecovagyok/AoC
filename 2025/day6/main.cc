@@ -17,13 +17,11 @@ struct MyChar {
   char buf[15];
 };
 
-constexpr int lines = 3;
-constexpr char ADDITION = '+';
-constexpr char MULTIP = '*';
+constexpr int lines = 4;
 
 std::string pre_everything[lines];
 
-char operations[1000];
+char operations[1000 + 1];
 
 void read_operand(int operand, std::string& line) {
   pre_everything[operand] = line;
@@ -32,24 +30,41 @@ void read_operand(int operand, std::string& line) {
 
 void process_operands() {
   using IType = std::string::size_type;
-  for (IType column = 0; true; column++) {
-    bool numbers_started[lines] = {};
-    uint32_t column_ends[lines];
+  uint64_t grand_total = 0;
+  uint64_t local_total;
+  int op_count = 0;
+  if (operations[0] == '+') {
+    local_total = 0;
+  } else {
+    local_total = 1;
+  }
+  for (IType column = 0; column < pre_everything[0].size(); column++) {
+    uint32_t parsed_vertical_num = 0;
     for (int row = 0; row < lines; row++) {
-      char val = pre_everything[row][column];
-      if (numbers_started[row]) {
-        if (isspace(val)) {
-          // Next number
-          numbers_started[row] = false;
-        } else {
-        }
+      if (!isspace(pre_everything[row][column])) {
+        unsigned char val = pre_everything[row][column];
+        parsed_vertical_num =
+            10 * parsed_vertical_num + static_cast<uint32_t>(val - '0');
+      }
+    }
+    if (parsed_vertical_num == 0) {
+      char operation = operations[++op_count];
+      grand_total += local_total;
+      if (operation == '+') {
+        local_total = 0;
+      } else if (operation == '*') {
+        local_total = 1;
+      }
+    } else {
+      char operation = operations[op_count];
+      if (operation == '+') {
+        local_total += parsed_vertical_num;
       } else {
-        if (!isspace(val)) {
-          numbers_started[row] = true;
-        }
+        local_total *= parsed_vertical_num;
       }
     }
   }
+  std::cout << grand_total + local_total << std::endl;
 }
 
 void process_operation(std::string& line) {
@@ -62,37 +77,6 @@ void process_operation(std::string& line) {
   }
 }
 
-void process_everything() {
-  uint64_t grand_total = 0;
-  for (int i = 0; everyting[i]._operator != Operation::_operator::NOTHING;
-       i++) {
-    uint64_t op_result =
-        everyting[i]._operator == Operation::_operator::ADDITION ? 0 : 1;
-    for (int count = 0; true; count++) {
-      Operation& ops = everyting[i];
-      uint32_t num_result = 0;
-#define X(num, mul)                                                         \
-  if (count < ops.operand##num.len && ops.operand##num.buf[count] != ' ') { \
-    uint32_t val =                                                          \
-        ops.operand##num.buf[ops.operand##num.len - count - 1] - '0';       \
-    num_result = 10 * num_result + val;                                     \
-  }
-      OPERANDS
-#undef X
-      if (num_result == 0) {
-        break;
-      }
-      if (everyting[i]._operator == Operation::_operator::ADDITION) {
-        op_result += num_result;
-      } else {
-        op_result *= num_result;
-      }
-    }
-    grand_total += op_result;
-  }
-  std::cout << grand_total << std::endl;
-}
-
 int main() {
   int cnt = 0;
   auto cb = [&cnt](std::string& line) {
@@ -103,9 +87,8 @@ int main() {
     }
     cnt++;
   };
-  AoCReader reader{cb, 4096, "2025/day6/input1.txt"};
+  AoCReader reader{cb, 4096, "2025/day6/input.txt"};
   reader.read();
   process_operands();
-  process_everything();
   return 0;
 }
