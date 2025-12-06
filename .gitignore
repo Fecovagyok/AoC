@@ -5,6 +5,7 @@ build/
 input.txt
 aoc.code-workspace
 **/example.txt
+input1.txt
 input2.txt
 input3.txt
 
