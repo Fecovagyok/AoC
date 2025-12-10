@@ -1,0 +1,11 @@
+#include <aoc_reader.h>
+
+#include "machine_stuff.h"
+
+int main() {
+  auto cb = [](std::string& line) { parse_that(line); };
+  AoCReader reader{cb, 1024, "2025/day10/input1.txt"};
+  reader.read();
+
+  return 0;
+}
