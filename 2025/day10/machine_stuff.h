@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <string>
 #include <vector>
 
@@ -31,6 +32,11 @@ struct Machine {
     for (size_t i = 0; i < button.bulbs.size(); i++) {
       bulbs[button.bulbs[i]].flip();
     }
+  }
+
+  template <typename... Indicies>
+  void press_multiple_buttons(Indicies... args) {
+    (this->press_button(args), ...);
   }
 
   bool test_machine();

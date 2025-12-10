@@ -13,11 +13,11 @@
 bool Machine::test_machine() {
   for (size_t i = 0; i < bulbs.size(); i++) {
     if (bulbs[i].current_state != bulbs[i].wanted_state) {
-      std::cout << "Fail";
+      std::cout << "Fail\n";
       return false;
     }
   }
-  std::cout << "Pass";
+  std::cout << "Pass\n";
   return true;
 }
 
