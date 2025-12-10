@@ -1,0 +1,2 @@
+add_library(me_conversion conversion_impl.cc)
+target_include_directories(me_conversion PUBLIC include)
