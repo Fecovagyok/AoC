@@ -1,17 +1,28 @@
 #include "machine_stuff.h"
 
-#include <algorithm>
 #include <cctype>
 #include <cstddef>
 #include <cstdint>
 #include <iostream>
-#include <numeric>
+#include <queue>
+#include <stdexcept>
 #include <string>
 #include <string_view>
+#include <unordered_set>
+#include <utility>
 #include <vector>
 
 #include "me_conversion.h"
 #include "me_split.h"
+
+void flip(std::string& kalap, size_t i) {
+  char& current_state = kalap.at(i);
+  if (current_state == '.') {
+    current_state = '#';
+  } else {
+    current_state = '.';
+  }
+}
 
 bool Machine::test_machine() {
   for (size_t i = 0; i < bulbs.size(); i++) {
@@ -56,27 +67,34 @@ void parse_that(std::string& line) {
 
 uint64_t solve_machine(size_t idx) {
   Machine& machine = machine_at(idx);
-  std::vector<Machine> buffer;
-  buffer.reserve(machine.buttons.size());
-  uint64_t counter = 0;
-  bool found = false;
-  while (!found) {
-    counter++;
+  std::queue<std::pair<std::string, uint32_t>> meglatogantando_cucsok;
+  meglatogantando_cucsok.emplace(std::make_pair(machine.bulbToString(), 0));
+  std::unordered_set<std::string> latogatott_csucsok;
+  while (meglatogantando_cucsok.size() > 0) {
+    auto current = meglatogantando_cucsok.front();
+    std::string current_string = current.first;
+    if (current_string == machine.bulbToExpectedString()) {
+      return current.second;
+    }
+    meglatogantando_cucsok.pop();
+    if (latogatott_csucsok.contains(current_string)) {
+      continue;
+    }
+    latogatott_csucsok.insert(current_string);
     for (uint64_t i = 0; i < machine.buttons.size(); i++) {
-      Machine* current;
-      if (i >= buffer.size()) {
-        current = &buffer.emplace_back(machine);
-      } else {
-        current = &buffer.at(i);
+      std::vector<BulbRef>& bulbs = machine.buttons[i].bulbs;
+      auto copy = current;
+      for (size_t i = 0; i < bulbs.size(); i++) {
+        size_t idx = bulbs[i];
+        flip(copy.first, idx);
       }
-      current->press_button(i);
-      if (current->test_machine()) {
-        found = true;
-        break;
+      if (!latogatott_csucsok.contains(copy.first)) {
+        copy.second++;
+        meglatogantando_cucsok.emplace(std::move(copy));
       }
     }
   }
-  return counter;
+  throw std::runtime_error("sdalsdlaksd;askd");
 }
 
 void solve_all_machines() {

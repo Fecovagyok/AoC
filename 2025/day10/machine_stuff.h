@@ -27,6 +27,24 @@ struct Machine {
   std::vector<Bulb> bulbs;
   std::vector<Button> buttons;
 
+  std::string bulbToString() {
+    std::string ret;
+    ret.reserve(bulbs.size());
+    for (size_t i = 0; i < bulbs.size(); i++) {
+      ret.push_back(bulbs[i].current_state);
+    }
+    return ret;
+  }
+
+  std::string bulbToExpectedString() {
+    std::string ret;
+    ret.reserve(bulbs.size());
+    for (size_t i = 0; i < bulbs.size(); i++) {
+      ret.push_back(bulbs[i].wanted_state);
+    }
+    return ret;
+  }
+
   void press_button(size_t idx) {
     Button& button = buttons[idx];
     for (size_t i = 0; i < button.bulbs.size(); i++) {
