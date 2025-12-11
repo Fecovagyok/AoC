@@ -30,7 +30,7 @@ struct Machine {
   void press_button(size_t idx) {
     Button& button = buttons[idx];
     for (size_t i = 0; i < button.bulbs.size(); i++) {
-      bulbs[button.bulbs[i]].flip();
+      bulbs.at(button.bulbs[i]).flip();
     }
   }
 
@@ -42,6 +42,7 @@ struct Machine {
   bool test_machine();
 };
 
+void solve_all_machines();
 bool test_all_machines();
 void parse_that(std::string& line);
 Machine& machine_at(size_t idx);

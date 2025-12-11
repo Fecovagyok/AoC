@@ -1,8 +1,11 @@
 #include "machine_stuff.h"
 
+#include <algorithm>
 #include <cctype>
 #include <cstddef>
+#include <cstdint>
 #include <iostream>
+#include <numeric>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -13,7 +16,7 @@
 bool Machine::test_machine() {
   for (size_t i = 0; i < bulbs.size(); i++) {
     if (bulbs[i].current_state != bulbs[i].wanted_state) {
-      std::cout << "Fail\n";
+      // std::cout << "Fail\n";
       return false;
     }
   }
@@ -37,7 +40,8 @@ void parse_that(std::string& line) {
   }
 
   machine.buttons.reserve(pieces.size() - 1);
-  for (size_t i = 1; i < pieces.size(); i++) {
+  // Negative one, so {} is ignored
+  for (size_t i = 1; i < pieces.size() - 1; i++) {
     std::string_view noob_view = pieces.at(i);
     std::string_view wire_view = noob_view.substr(1, noob_view.size() - 2);
     auto bulb_refs = split(wire_view, ',');
@@ -48,6 +52,39 @@ void parse_that(std::string& line) {
       button.bulbs.emplace_back(str_to_int(bulb_refs[i]));
     }
   }
+}
+
+uint64_t solve_machine(size_t idx) {
+  Machine& machine = machine_at(idx);
+  std::vector<Machine> buffer;
+  buffer.reserve(machine.buttons.size());
+  uint64_t counter = 0;
+  bool found = false;
+  while (!found) {
+    counter++;
+    for (uint64_t i = 0; i < machine.buttons.size(); i++) {
+      Machine* current;
+      if (i >= buffer.size()) {
+        current = &buffer.emplace_back(machine);
+      } else {
+        current = &buffer.at(i);
+      }
+      current->press_button(i);
+      if (current->test_machine()) {
+        found = true;
+        break;
+      }
+    }
+  }
+  return counter;
+}
+
+void solve_all_machines() {
+  uint64_t sum = 0;
+  for (size_t i = 0; i < tasks.size(); i++) {
+    sum += solve_machine(i);
+  }
+  std::cout << sum << std::endl;
 }
 
 bool test_all_machines() {
