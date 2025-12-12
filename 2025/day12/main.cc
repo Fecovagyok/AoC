@@ -54,31 +54,13 @@ Shape rotate(Shape& to_be_rotated) {
 }
 
 bool process_place(Place& place) {
-  PlaceMatrix matrix{place.length, place.width};
-
   assert(place.quotas.size() == shapes.size());
   uint32_t count = place.quotas.at(2) / 2;
-  uint32_t iter = 0;
-  if (place.width >= place.length) {
-    for (uint32_t j = 0; j < place.width; j++) {
-      for (uint32_t i = 0; i < place.length; i++) {
-        if (iter >= count) {
-          break;
-        }
-        matrix.at(i, j) = '#';
-        iter++;
-      }
-    }
-  }
   uint32_t rem = place.shape_count - count * 2;
   if (rem * 9 <= place.length * place.width - count) {
     return true;
   }
   return false;
-  // for (size_t i = 0; i < shapes.size(); i++) {
-  //   Shape& shape = shapes[i];
-  //   uint32_t num = place.quotas[i]
-  // }
 }
 
 void process() {
