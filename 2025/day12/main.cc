@@ -1,7 +1,6 @@
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
-#include <format>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -33,31 +32,71 @@ struct Parsing {
   unsigned long shape_line = 0;
 };
 
+class PlaceMatrix {
+  std::vector<char> array;
+
+ public:
+  PlaceMatrix(uint32_t row, uint32_t column) : array(column * row, '.') {
+    array.reserve(column * row);
+  }
+
+  char& at(uint32_t row, uint32_t column) { return array.at(row * column); }
+};
+
 Shape rotate(Shape& to_be_rotated) {
   Shape shape = to_be_rotated;
   for (int i = 0; i < 3; i++) {
     for (int j = 0; j < 3; j++) {
-      shape.shape[i][j] = to_be_rotated.shape[j][3 - 1 - i];
+      shape.shape[i][j] = to_be_rotated.shape[3 - 1 - j][i];
     }
   }
   return shape;
 }
 
+bool process_place(Place& place) {
+  PlaceMatrix matrix{place.length, place.width};
+
+  assert(place.quotas.size() == shapes.size());
+  uint32_t count = place.quotas.at(2) / 2;
+  uint32_t iter = 0;
+  if (place.width >= place.length) {
+    for (uint32_t j = 0; j < place.width; j++) {
+      for (uint32_t i = 0; i < place.length; i++) {
+        if (iter >= count) {
+          break;
+        }
+        matrix.at(i, j) = '#';
+        iter++;
+      }
+    }
+  }
+  uint32_t rem = place.shape_count - count * 2;
+  if (rem * 9 <= place.length * place.width - count) {
+    return true;
+  }
+  return false;
+  // for (size_t i = 0; i < shapes.size(); i++) {
+  //   Shape& shape = shapes[i];
+  //   uint32_t num = place.quotas[i]
+  // }
+}
+
 void process() {
   uint32_t count = 0;
-  uint32_t masik = 0;
   for (size_t i = 0; i < places.size(); i++) {
     Place& place = places[i];
     if (place.width * place.length < place.space_requirement) {
-      masik++;
       continue;
     }
     if (place.length * place.width <= place.shape_count * 9) {
       count++;
       continue;
     }
+    if (process_place(place)) {
+      count++;
+    }
   }
-  std::cout << places.size() - count - masik << std::endl;
+  std::cout << count << std::endl;
 }
 
 int main() {
