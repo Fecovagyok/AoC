@@ -60,7 +60,7 @@ void parse_that(std::string& line) {
     Button& button = machine.buttons.emplace_back();
     button.bulbs.reserve(bulb_refs.size());
     for (size_t i = 0; i < bulb_refs.size(); i++) {
-      button.bulbs.emplace_back(str_to_int(bulb_refs[i]));
+      button.bulbs.emplace_back(str_to_int64(bulb_refs[i]));
     }
   }
 }
