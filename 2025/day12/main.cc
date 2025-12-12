@@ -12,12 +12,15 @@
 
 struct Shape {
   char shape[3][3];
+  unsigned int space_requirement = 0;
 };
 
 struct Place {
   uint32_t width;
   uint32_t length;
   std::vector<uint32_t> quotas;
+  uint64_t space_requirement = 0;
+  uint32_t shape_count = 0;
 };
 
 std::vector<Shape> shapes;
@@ -29,6 +32,33 @@ struct Parsing {
   bool expect_shape = false;
   unsigned long shape_line = 0;
 };
+
+Shape rotate(Shape& to_be_rotated) {
+  Shape shape = to_be_rotated;
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) {
+      shape.shape[i][j] = to_be_rotated.shape[j][3 - 1 - i];
+    }
+  }
+  return shape;
+}
+
+void process() {
+  uint32_t count = 0;
+  uint32_t masik = 0;
+  for (size_t i = 0; i < places.size(); i++) {
+    Place& place = places[i];
+    if (place.width * place.length < place.space_requirement) {
+      masik++;
+      continue;
+    }
+    if (place.length * place.width <= place.shape_count * 9) {
+      count++;
+      continue;
+    }
+  }
+  std::cout << places.size() - count - masik << std::endl;
+}
 
 int main() {
   Parsing parsing;
@@ -49,6 +79,7 @@ int main() {
     if (parsing.expect_shape) {
       for (size_t i = 0; i < 3; i++) {
         parsing.current->shape[parsing.shape_line][i] = line[i];
+        if (line[i] == '#') parsing.current->space_requirement++;
       }
       parsing.shape_line++;
       if (parsing.shape_line == 3) parsing.expect_shape = false;
@@ -65,11 +96,14 @@ int main() {
     assert(pieces.size() == shapes.size() + 1);
     place.quotas.reserve(pieces.size() - 1);
     for (size_t i = 1; i < pieces.size(); i++) {
+      uint32_t number = str_to_int32(pieces[i]);
       place.quotas.emplace_back(str_to_int32(pieces[i]));
+      place.space_requirement +=
+          shapes.at((place.quotas.size() - 1)).space_requirement * number;
+      place.shape_count += number;
     }
-
-    std::cout << line << std::endl;
   };
-  AoCReader reader{cb, 512, "2025/day12/input1.txt"};
+  AoCReader reader{cb, 512, "2025/day12/input.txt"};
   reader.read();
+  process();
 }
