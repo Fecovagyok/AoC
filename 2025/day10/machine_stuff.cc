@@ -24,16 +24,20 @@ void flip(std::string& kalap, size_t i) {
   }
 }
 
-bool Machine::test_machine() {
-  for (size_t i = 0; i < bulbs.size(); i++) {
-    if (bulbs[i].current_state != bulbs[i].wanted_state) {
-      // std::cout << "Fail\n";
-      return false;
+namespace std {
+template <>
+struct hash<Bulbs> {
+  std::size_t operator()(const Bulbs& bulbs) const noexcept {
+    std::size_t hash = 0;
+    for (size_t i = 0; i < bulbs.size(); i++) {
+      hash ^= (static_cast<size_t>(bulbs.at_const(i)) << i * 7);
     }
+    return hash;
   }
-  std::cout << "Pass\n";
-  return true;
-}
+};
+}  // namespace std
+
+bool Machine::test_machine() { return true; }
 
 std::vector<Machine> tasks;
 
@@ -43,11 +47,14 @@ void parse_that(std::string& line) {
   // Missing split functionality, lol
   std::vector<std::string_view> pieces = split(line);
   // Last piece missing, but currently I dont care
-  std::string_view bulb_view = pieces.at(0);
+  std::string_view bulb_view_with_brackets = pieces.at(pieces.size() - 1);
+  std::string_view bulb_view =
+      bulb_view_with_brackets.substr(1, bulb_view_with_brackets.size() - 1);
+  std::vector<std::string_view> bulb_pieces = split(bulb_view, ',');
   Machine& machine = tasks.emplace_back();
-  machine.bulbs.reserve(bulb_view.size() - 2);
-  for (size_t i = 1; i < bulb_view.size() - 1; i++) {
-    machine.bulbs.emplace_back(bulb_view.at(i), '.');
+  machine.bulbs.reserve(bulb_pieces.size());
+  for (size_t i = 0; i < bulb_pieces.size(); i++) {
+    machine.bulbs.emplace_back(str_to_int32(bulb_pieces[i]));
   }
 
   machine.buttons.reserve(pieces.size() - 1);
@@ -67,13 +74,15 @@ void parse_that(std::string& line) {
 
 uint64_t solve_machine(size_t idx) {
   Machine& machine = machine_at(idx);
-  std::queue<std::pair<std::string, uint32_t>> meglatogantando_cucsok;
-  meglatogantando_cucsok.emplace(std::make_pair(machine.bulbToString(), 0));
-  std::unordered_set<std::string> latogatott_csucsok;
+  Bulbs expected = machine.bulbs;
+  machine.startBulbs();
+  std::queue<std::pair<Bulbs, uint32_t>> meglatogantando_cucsok;
+  meglatogantando_cucsok.emplace(machine.bulbs, 0);
+  std::unordered_set<Bulbs> latogatott_csucsok;
   while (meglatogantando_cucsok.size() > 0) {
     auto current = meglatogantando_cucsok.front();
-    std::string current_string = current.first;
-    if (current_string == machine.bulbToExpectedString()) {
+    Bulbs& current_string = current.first;
+    if (current_string == expected) {
       return current.second;
     }
     meglatogantando_cucsok.pop();
@@ -84,9 +93,17 @@ uint64_t solve_machine(size_t idx) {
     for (uint64_t i = 0; i < machine.buttons.size(); i++) {
       std::vector<BulbRef>& bulbs = machine.buttons[i].bulbs;
       auto copy = current;
+      bool very_good = true;
       for (size_t i = 0; i < bulbs.size(); i++) {
         size_t idx = bulbs[i];
-        flip(copy.first, idx);
+        copy.first.at(idx)++;
+        if (copy.first.at(idx) > expected.at(idx)) {
+          very_good = false;
+          break;
+        }
+      }
+      if (!very_good /* this is not very good*/) {
+        continue;
       }
       if (!latogatott_csucsok.contains(copy.first)) {
         copy.second++;

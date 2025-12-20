@@ -1,21 +1,9 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdint>
 #include <string>
 #include <vector>
-
-struct Bulb {
-  const char wanted_state;
-  char current_state;
-
-  void flip() {
-    if (current_state == '.') {
-      current_state = '#';
-    } else {
-      current_state = '.';
-    }
-  }
-};
 
 using BulbRef = size_t;
 
@@ -23,32 +11,75 @@ struct Button {
   std::vector<BulbRef> bulbs;
 };
 
-struct Machine {
-  std::vector<Bulb> bulbs;
-  std::vector<Button> buttons;
+class Bulbs {
+  std::vector<uint32_t> bulbs;
 
-  std::string bulbToString() {
+ public:
+  // Bulbs() = default;
+  // Bulbs(const Bulbs& other) = default;
+  // Bulbs(Bulbs&& other) : bulbs(other.bulbs) {}
+  // Bulbs& operator=(const Bulbs& other) = default;
+  // Bulbs& operator=(Bulbs&& other) {
+  //   bulbs = other.bulbs;
+  //   return *this;
+  // }
+
+  size_t size() const { return bulbs.size(); }
+  uint32_t& at(size_t idx) { return bulbs.at(idx); }
+  uint32_t& operator[](size_t idx) { return this->at(idx); }
+  uint32_t& emplace_back(uint32_t value) { return bulbs.emplace_back(value); }
+  void reserve(size_t num) { bulbs.reserve(num); }
+
+  uint32_t at_const(size_t idx) const { return bulbs.at(idx); }
+
+  std::string bulbsToString() {
     std::string ret;
-    ret.reserve(bulbs.size());
-    for (size_t i = 0; i < bulbs.size(); i++) {
-      ret.push_back(bulbs[i].current_state);
+    ret.reserve(bulbs.size() * 3);
+    for (size_t i = 0; i < bulbs.size() - 1; i++) {
+      ret.append(std::to_string(bulbs[i]));
+      ret.push_back(',');
     }
+    ret.append(std::to_string(bulbs[bulbs.size() - 1]));
     return ret;
   }
 
-  std::string bulbToExpectedString() {
-    std::string ret;
-    ret.reserve(bulbs.size());
+  bool operator==(const Bulbs& other) const {
+    if (&other == this) return true;
+    if (other.bulbs.size() != bulbs.size()) return false;
     for (size_t i = 0; i < bulbs.size(); i++) {
-      ret.push_back(bulbs[i].wanted_state);
+      if (bulbs[i] != other.bulbs[i]) {
+        return false;
+      }
     }
+    return true;
+  }
+};
+
+struct Machine {
+  Bulbs bulbs;
+  std::vector<Button> buttons;
+
+  void startBulbs() {
+    for (size_t i = 0; i < bulbs.size(); i++) {
+      bulbs[i] = 0;
+    }
+  }
+
+  std::string bulbsToString() {
+    std::string ret;
+    ret.reserve(bulbs.size() * 3);
+    for (size_t i = 0; i < bulbs.size() - 1; i++) {
+      ret.append(std::to_string(bulbs[i]));
+      ret.push_back(',');
+    }
+    ret.append(std::to_string(bulbs[bulbs.size() - 1]));
     return ret;
   }
 
   void press_button(size_t idx) {
     Button& button = buttons[idx];
     for (size_t i = 0; i < button.bulbs.size(); i++) {
-      bulbs.at(button.bulbs[i]).flip();
+      bulbs.at(button.bulbs[i])++;
     }
   }
 
