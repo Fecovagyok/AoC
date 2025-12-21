@@ -39,32 +39,43 @@ struct hash<Bulbs> {
 }  // namespace std
 
 class Variations {
-  std::vector<uint32_t> vars;
-  size_t num_of_buttons;
+  uint32_t* vars;
+  uint32_t num_of_buttons;
+  uint32_t num_of_presses;
   bool ended = false;
 
+  uint32_t& at(uint32_t idx) {
+    if (idx >= num_of_buttons)
+      throw std::out_of_range("Custom index out of range");
+
+    return vars[idx];
+  }
+
  public:
-  Variations(uint32_t num_of_presses, size_t num_of_buttons)
-      : vars(num_of_presses, 0), num_of_buttons(num_of_buttons) {}
-  void next_variation() {
-    size_t i;
-    for (i = 0; i < vars.size(); i++) {
-      uint32_t& position = vars.at(i);
-      if (position + 1 >= num_of_buttons) {
-        position = 0;
-      } else {
-        position++;
-        break;
-      }
+  Variations(uint32_t num_of_presses, uint32_t num_of_buttons)
+      : num_of_buttons(num_of_buttons), num_of_presses(num_of_presses) {
+    vars = new uint32_t[num_of_buttons];
+    vars[0] = num_of_presses;
+    for (uint32_t i = 1; i < num_of_buttons; i++) {
+      vars[i] = 0;
     }
-    if (i >= vars.size()) {
-      ended = true;
+  }
+  ~Variations() { delete[] vars; }
+  void next_variation() {
+    uint32_t last = vars[num_of_buttons - 1];
+    if (vars[num_of_buttons - 1] != 0) {
+    }
+    for (uint32_t i = num_of_buttons - 2; i < num_of_buttons; i--) {
+      if (vars[i] != 0) {
+        vars[i]--;
+        vars[i + 1]++;
+      }
     }
     return;
   }
 
   void push_buttons(Machine& machine) {
-    for (uint32_t i = 0; i < vars.size(); i++) {
+    for (uint32_t i = 0; i < num_of_buttons; i++) {
       machine.press_button(vars[i]);
     }
   }
