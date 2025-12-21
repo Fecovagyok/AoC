@@ -41,30 +41,26 @@ struct hash<Bulbs> {
 class Variations {
   std::vector<uint32_t> vars;
   size_t num_of_buttons;
-  size_t idx = 0;
   bool ended = false;
 
  public:
   Variations(uint32_t num_of_presses, size_t num_of_buttons)
       : vars(num_of_presses, 0), num_of_buttons(num_of_buttons) {}
   void next_variation() {
-    bool reset = false;
-    for (uint32_t i = 0; i < idx; i--) {
+    size_t i;
+    for (i = 0; i < vars.size(); i++) {
       uint32_t& position = vars.at(i);
       if (position + 1 >= num_of_buttons) {
         position = 0;
-        reset = true;
       } else {
         position++;
         break;
       }
     }
-    if (reset) {
-      idx++;
-      if (idx >= vars.size()) {
-        ended = true;
-      }
+    if (i >= vars.size()) {
+      ended = true;
     }
+    return;
   }
 
   void push_buttons(Machine& machine) {
