@@ -1,5 +1,6 @@
 #include "machine_stuff.h"
 
+#include <algorithm>
 #include <cctype>
 #include <cstddef>
 #include <cstdint>
@@ -37,6 +38,44 @@ struct hash<Bulbs> {
 };
 }  // namespace std
 
+class Variations {
+  std::vector<uint32_t> vars;
+  size_t num_of_buttons;
+  size_t idx = 0;
+  bool ended = false;
+
+ public:
+  Variations(uint32_t num_of_presses, size_t num_of_buttons)
+      : vars(num_of_presses, 0), num_of_buttons(num_of_buttons) {}
+  void next_variation() {
+    bool reset = false;
+    for (uint32_t i = 0; i < idx; i--) {
+      uint32_t& position = vars.at(i);
+      if (position + 1 >= num_of_buttons) {
+        position = 0;
+        reset = true;
+      } else {
+        position++;
+        break;
+      }
+    }
+    if (reset) {
+      idx++;
+      if (idx >= vars.size()) {
+        ended = true;
+      }
+    }
+  }
+
+  void push_buttons(Machine& machine) {
+    for (uint32_t i = 0; i < vars.size(); i++) {
+      machine.press_button(vars[i]);
+    }
+  }
+
+  bool has_next() const { return !ended; }
+};
+
 bool Machine::test_machine() { return true; }
 
 std::vector<Machine> tasks;
@@ -49,7 +88,7 @@ void parse_that(std::string& line) {
   // Last piece missing, but currently I dont care
   std::string_view bulb_view_with_brackets = pieces.at(pieces.size() - 1);
   std::string_view bulb_view =
-      bulb_view_with_brackets.substr(1, bulb_view_with_brackets.size() - 1);
+      bulb_view_with_brackets.substr(1, bulb_view_with_brackets.size() - 2);
   std::vector<std::string_view> bulb_pieces = split(bulb_view, ',');
   Machine& machine = tasks.emplace_back();
   machine.bulbs.reserve(bulb_pieces.size());
@@ -72,43 +111,29 @@ void parse_that(std::string& line) {
   }
 }
 
+bool go_through_all_possibilites(uint32_t num, Machine& machine,
+                                 Bulbs& excpected) {
+  for (Variations variations{num, machine.buttons.size()};
+       variations.has_next(); variations.next_variation()) {
+    Machine copy = machine;
+    variations.push_buttons(copy);
+    if (copy.bulbs == excpected) {
+      return true;
+    }
+  }
+  return false;
+}
+
 uint64_t solve_machine(size_t idx) {
   Machine& machine = machine_at(idx);
   Bulbs expected = machine.bulbs;
   machine.startBulbs();
-  std::queue<std::pair<Bulbs, uint32_t>> meglatogantando_cucsok;
-  meglatogantando_cucsok.emplace(machine.bulbs, 0);
-  std::unordered_set<Bulbs> latogatott_csucsok;
-  while (meglatogantando_cucsok.size() > 0) {
-    auto current = meglatogantando_cucsok.front();
-    Bulbs& current_string = current.first;
-    if (current_string == expected) {
-      return current.second;
-    }
-    meglatogantando_cucsok.pop();
-    if (latogatott_csucsok.contains(current_string)) {
-      continue;
-    }
-    latogatott_csucsok.insert(current_string);
-    for (uint64_t i = 0; i < machine.buttons.size(); i++) {
-      std::vector<BulbRef>& bulbs = machine.buttons[i].bulbs;
-      auto copy = current;
-      bool very_good = true;
-      for (size_t i = 0; i < bulbs.size(); i++) {
-        size_t idx = bulbs[i];
-        copy.first.at(idx)++;
-        if (copy.first.at(idx) > expected.at(idx)) {
-          very_good = false;
-          break;
-        }
-      }
-      if (!very_good /* this is not very good*/) {
-        continue;
-      }
-      if (!latogatott_csucsok.contains(copy.first)) {
-        copy.second++;
-        meglatogantando_cucsok.emplace(std::move(copy));
-      }
+  auto max_iter = std::max_element(expected.cbegin(), expected.cend());
+  uint32_t max = *max_iter * machine.buttons.size();
+
+  for (uint32_t i = 1; i < max; i++) {
+    if (go_through_all_possibilites(i, machine, expected)) {
+      return i;
     }
   }
   throw std::runtime_error("sdalsdlaksd;askd");

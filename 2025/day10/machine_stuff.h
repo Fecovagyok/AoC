@@ -29,6 +29,8 @@ class Bulbs {
   uint32_t& operator[](size_t idx) { return this->at(idx); }
   uint32_t& emplace_back(uint32_t value) { return bulbs.emplace_back(value); }
   void reserve(size_t num) { bulbs.reserve(num); }
+  auto cbegin() const { return this->bulbs.cbegin(); }
+  auto cend() const { return this->bulbs.cend(); }
 
   uint32_t at_const(size_t idx) const { return bulbs.at(idx); }
 
