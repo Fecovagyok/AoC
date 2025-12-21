@@ -1,16 +1,11 @@
 #include "machine_stuff.h"
 
-#include <algorithm>
 #include <cctype>
 #include <cstddef>
 #include <cstdint>
 #include <iostream>
-#include <queue>
-#include <stdexcept>
 #include <string>
 #include <string_view>
-#include <unordered_set>
-#include <utility>
 #include <vector>
 
 #include "me_conversion.h"
@@ -37,51 +32,6 @@ struct hash<Bulbs> {
   }
 };
 }  // namespace std
-
-class Variations {
-  uint32_t* vars;
-  uint32_t num_of_buttons;
-  uint32_t num_of_presses;
-  bool ended = false;
-
-  uint32_t& at(uint32_t idx) {
-    if (idx >= num_of_buttons)
-      throw std::out_of_range("Custom index out of range");
-
-    return vars[idx];
-  }
-
- public:
-  Variations(uint32_t num_of_presses, uint32_t num_of_buttons)
-      : num_of_buttons(num_of_buttons), num_of_presses(num_of_presses) {
-    vars = new uint32_t[num_of_buttons];
-    vars[0] = num_of_presses;
-    for (uint32_t i = 1; i < num_of_buttons; i++) {
-      vars[i] = 0;
-    }
-  }
-  ~Variations() { delete[] vars; }
-  void next_variation() {
-    uint32_t last = vars[num_of_buttons - 1];
-    if (vars[num_of_buttons - 1] != 0) {
-    }
-    for (uint32_t i = num_of_buttons - 2; i < num_of_buttons; i--) {
-      if (vars[i] != 0) {
-        vars[i]--;
-        vars[i + 1]++;
-      }
-    }
-    return;
-  }
-
-  void push_buttons(Machine& machine) {
-    for (uint32_t i = 0; i < num_of_buttons; i++) {
-      machine.press_button(vars[i]);
-    }
-  }
-
-  bool has_next() const { return !ended; }
-};
 
 bool Machine::test_machine() { return true; }
 
@@ -118,32 +68,11 @@ void parse_that(std::string& line) {
   }
 }
 
-bool go_through_all_possibilites(uint32_t num, Machine& machine,
-                                 Bulbs& excpected) {
-  for (Variations variations{num, machine.buttons.size()};
-       variations.has_next(); variations.next_variation()) {
-    Machine copy = machine;
-    variations.push_buttons(copy);
-    if (copy.bulbs == excpected) {
-      return true;
-    }
-  }
-  return false;
-}
-
 uint64_t solve_machine(size_t idx) {
   Machine& machine = machine_at(idx);
   Bulbs expected = machine.bulbs;
   machine.startBulbs();
-  auto max_iter = std::max_element(expected.cbegin(), expected.cend());
-  uint32_t max = *max_iter * machine.buttons.size();
-
-  for (uint32_t i = 1; i < max; i++) {
-    if (go_through_all_possibilites(i, machine, expected)) {
-      return i;
-    }
-  }
-  throw std::runtime_error("sdalsdlaksd;askd");
+  return 0;
 }
 
 void solve_all_machines() {
