@@ -1,5 +1,5 @@
-#include <algorithm>
 #include <cassert>
+#include <chrono>
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
@@ -172,6 +172,7 @@ int main() {
   auto cb = [](std::string& line) { parse(line); };
   AoCReader reader{cb, 256, "2025/day8/input.txt"};
   reader.read();
+  auto start = std::chrono::steady_clock::now();
   lone_circuit_count = boxes.size();
   connect_first_pair();
   while (lone_circuit_count + circuit_list.size() != 1) {
@@ -179,6 +180,12 @@ int main() {
   }
   uint64_t product = static_cast<uint64_t>(last1->coords[0]) *
                      static_cast<uint64_t>(last2->coords[0]);
+  auto end = std::chrono::steady_clock::now();
   std::cout << product << std::endl;
+  std::cout << "Took: "
+            << std::chrono::duration_cast<std::chrono::milliseconds>(end -
+                                                                     start)
+
+            << std::endl;
   return 0;
 }
