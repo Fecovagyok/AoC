@@ -134,8 +134,11 @@ void connect_one_pair() {
   size_t idx1 = 0, idx2 = 1;
   for (size_t i = 0; i < boxes.size(); i++) {
     for (size_t j = i + 1; j < boxes.size(); j++) {
+      if (connection_set.contains({boxes[i], boxes[j]})) {
+        continue;
+      }
       double distance = boxes[i] - boxes[j];
-      if (!connection_set.contains({boxes[i], boxes[j]}) && distance < min) {
+      if (distance < min) {
         min = distance;
         idx1 = i;
         idx2 = j;
