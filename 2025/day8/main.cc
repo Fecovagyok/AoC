@@ -170,7 +170,7 @@ void parse(std::string& line) {
 
 int main() {
   auto cb = [](std::string& line) { parse(line); };
-  AoCReader reader{cb, 256, "2025/day8/input1.txt"};
+  AoCReader reader{cb, 256, "2025/day8/input.txt"};
   reader.read();
   lone_circuit_count = boxes.size();
   connect_first_pair();
