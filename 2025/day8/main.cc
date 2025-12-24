@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <cstddef>
@@ -145,6 +146,10 @@ void connect_one_pair() {
   ciruit_mergin_stuff(one, other);
 }
 
+bool comparator(const Circuit& lhs, const Circuit& rhs) {
+  return lhs.boxes.size() > rhs.boxes.size();
+}
+
 void parse(std::string& line) {
   boxes.reserve(1000);
   auto pieces = split(line, ',');
@@ -157,17 +162,16 @@ void parse(std::string& line) {
 
 int main() {
   auto cb = [](std::string& line) { parse(line); };
-  AoCReader reader{cb, 256, "2025/day8/input1.txt"};
+  AoCReader reader{cb, 256, "2025/day8/input.txt"};
   reader.read();
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < 1000; i++) {
     connect_one_pair();
   }
+  std::vector<Circuit> vector_list(circuit_list.cbegin(), circuit_list.cend());
+  std::sort(vector_list.begin(), vector_list.end(), comparator);
   uint64_t product = 1;
-  uint32_t count = 0;
-  for (Circuit& circuit : circuit_list) {
-    if (count >= 3) break;
-    product = product * circuit.boxes.size();
-    count++;
+  for (size_t i = 0; i < 3; i++) {
+    product = product * vector_list.at(i).boxes.size();
   }
   std::cout << product << std::endl;
   return 0;
