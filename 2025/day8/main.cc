@@ -168,10 +168,7 @@ void parse(std::string& line) {
   }
 }
 
-int main() {
-  auto cb = [](std::string& line) { parse(line); };
-  AoCReader reader{cb, 256, "2025/day8/input.txt"};
-  reader.read();
+void part2() {
   auto start = std::chrono::steady_clock::now();
   lone_circuit_count = boxes.size();
   connect_first_pair();
@@ -182,10 +179,42 @@ int main() {
                      static_cast<uint64_t>(last2->coords[0]);
   auto end = std::chrono::steady_clock::now();
   std::cout << product << std::endl;
-  std::cout << "Took: "
+  std::cout << "took: "
             << std::chrono::duration_cast<std::chrono::milliseconds>(end -
                                                                      start)
 
             << std::endl;
+}
+
+void part1() {
+  auto start = std::chrono::steady_clock::now();
+  connect_first_pair();
+  for (int i = 0; i < 999; i++) {
+    connect_all_other_pairs();
+  }
+  std::vector<uint64_t> sorted_circuit_size;
+  sorted_circuit_size.reserve(circuit_list.size());
+  for (Circuit& circuit : circuit_list) {
+    sorted_circuit_size.push_back(circuit.boxes.size());
+  }
+  uint64_t product = 1;
+  std::sort(sorted_circuit_size.begin(), sorted_circuit_size.end());
+  for (size_t i = 0; i < 3; i++) {
+    product *= sorted_circuit_size[sorted_circuit_size.size() - 1 - i];
+  }
+  auto end = std::chrono::steady_clock::now();
+  std::cout << product << std::endl;
+  std::cout << "took: "
+            << std::chrono::duration_cast<std::chrono::milliseconds>(end -
+                                                                     start)
+
+            << std::endl;
+}
+
+int main() {
+  auto cb = [](std::string& line) { parse(line); };
+  AoCReader reader{cb, 256, "2025/day8/input.txt"};
+  reader.read();
+  part2();
   return 0;
 }
