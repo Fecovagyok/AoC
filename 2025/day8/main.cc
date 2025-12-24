@@ -6,7 +6,6 @@
 #include <list>
 #include <ostream>
 #include <string_view>
-#include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
@@ -20,6 +19,13 @@ struct JunctionBox {
   int32_t coords[3];
   std::list<Circuit>::iterator circuit;
   bool circuit_connected = false;
+  uint64_t hash;
+
+  void calc_hash() {
+    hash = (static_cast<uint64_t>(coords[0]) << 43) ^
+           (static_cast<uint64_t>(coords[1]) << 22) ^
+           (static_cast<uint64_t>(coords[2])) ^ (coords[0] >> 11);
+  }
 
   double operator-(const JunctionBox& other) const {
     uint64_t sum_squared = 0;
@@ -67,11 +73,7 @@ struct hash<JunctionBoxConnection> {
 };
 template <>
 struct hash<JunctionBox> {
-  uint64_t operator()(const JunctionBox& b) const noexcept {
-    return (static_cast<uint64_t>(b[0]) << 43) ^
-           (static_cast<uint64_t>(b[1]) << 22) ^ (static_cast<uint64_t>(b[2])) ^
-           (b[0] >> 11);
-  }
+  uint64_t operator()(const JunctionBox& b) const noexcept { return b.hash; }
 };
 }  // namespace std
 
@@ -158,6 +160,7 @@ void parse(std::string& line) {
   for (int i = 0; i < 3; i++) {
     box.coords[i] = str_to_int32(pieces[i]);
   }
+  box.calc_hash();
 }
 
 int main() {
