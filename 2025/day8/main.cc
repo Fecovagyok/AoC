@@ -39,14 +39,6 @@ struct JunctionBox {
   }
 };
 
-struct JunctionBoxConnection {
-  JunctionBox first;
-  JunctionBox second;
-  bool operator==(const JunctionBoxConnection& other) const noexcept {
-    return first == other.first && second == other.second;
-  }
-};
-
 struct Circuit {
   std::unordered_set<JunctionBox*> boxes;
 
@@ -58,29 +50,13 @@ struct DistanceData {
   bool connected;
 };
 
-namespace std {
-template <>
-struct hash<JunctionBoxConnection> {
-  uint64_t operator()(const JunctionBoxConnection& c) const noexcept {
-    return (static_cast<uint64_t>(c.first.coords[0]) << 53) ^
-           (static_cast<uint64_t>(c.first.coords[1]) << 43) ^
-           (static_cast<uint64_t>(c.first[2]) << 33) ^
-           (static_cast<uint64_t>(c.second[0]) << 23) ^
-           (static_cast<uint64_t>(c.second[1]) << 13) ^
-           (static_cast<uint64_t>(c.second[2])) ^ (c.first[0] >> 21);
-  }
-};
-}  // namespace std
-
 std::ostream& operator<<(std::ostream& os, const JunctionBox& box) {
   return os << box.coords[0] << "," << box.coords[1] << "," << box.coords[2]
             << "\n";
 }
 
 std::vector<JunctionBox> boxes;
-std::unordered_set<JunctionBoxConnection> connection_set;
 DistanceData connection_data[1000][1000];
-// std::unordered_map<JunctionBox, Circuit*> circuit_map;
 std::list<Circuit> circuit_list;
 
 void ciruit_mergin_stuff(JunctionBox& one, JunctionBox& other) {
