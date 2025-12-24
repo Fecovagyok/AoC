@@ -58,8 +58,13 @@ std::ostream& operator<<(std::ostream& os, const JunctionBox& box) {
 std::vector<JunctionBox> boxes;
 DistanceData connection_data[1000][1000];
 std::list<Circuit> circuit_list;
+int64_t lone_circuit_count;
+JunctionBox* last1;
+JunctionBox* last2;
 
 void ciruit_mergin_stuff(JunctionBox& one, JunctionBox& other) {
+  last1 = &one;
+  last2 = &other;
   if (!one.circuit_connected && !other.circuit_connected) {
     Circuit circuit{{&one, &other}};
     auto circuit_iter =
@@ -69,6 +74,8 @@ void ciruit_mergin_stuff(JunctionBox& one, JunctionBox& other) {
     other.circuit = circuit_iter;
     one.circuit_connected = true;
     other.circuit_connected = true;
+    lone_circuit_count -= 2;
+    assert(lone_circuit_count >= 0);
     return;
   }
 
@@ -76,6 +83,8 @@ void ciruit_mergin_stuff(JunctionBox& one, JunctionBox& other) {
     other.circuit->push_back(&one);
     one.circuit = other.circuit;
     one.circuit_connected = true;
+    lone_circuit_count--;
+    assert(lone_circuit_count >= 0);
     return;
   }
 
@@ -83,6 +92,8 @@ void ciruit_mergin_stuff(JunctionBox& one, JunctionBox& other) {
     one.circuit->push_back(&other);
     other.circuit = one.circuit;
     other.circuit_connected = true;
+    lone_circuit_count--;
+    assert(lone_circuit_count >= 0);
     return;
   }
 
@@ -159,18 +170,15 @@ void parse(std::string& line) {
 
 int main() {
   auto cb = [](std::string& line) { parse(line); };
-  AoCReader reader{cb, 256, "2025/day8/input.txt"};
+  AoCReader reader{cb, 256, "2025/day8/input1.txt"};
   reader.read();
+  lone_circuit_count = boxes.size();
   connect_first_pair();
-  for (int i = 0; i < 999; i++) {
+  while (lone_circuit_count + circuit_list.size() != 1) {
     connect_all_other_pairs();
   }
-  std::vector<Circuit> vector_list(circuit_list.cbegin(), circuit_list.cend());
-  std::sort(vector_list.begin(), vector_list.end(), comparator);
-  uint64_t product = 1;
-  for (size_t i = 0; i < 3; i++) {
-    product = product * vector_list.at(i).boxes.size();
-  }
+  uint64_t product = static_cast<uint64_t>(last1->coords[0]) *
+                     static_cast<uint64_t>(last2->coords[0]);
   std::cout << product << std::endl;
   return 0;
 }
