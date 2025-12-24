@@ -3,6 +3,7 @@
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
+#include <limits>
 #include <list>
 #include <ostream>
 #include <string_view>
@@ -59,6 +60,11 @@ struct Circuit {
   void push_back(JunctionBox* box) { boxes.insert(box); }
 };
 
+struct DistanceData {
+  double distance;
+  bool connected;
+};
+
 namespace std {
 template <>
 struct hash<JunctionBoxConnection> {
@@ -84,6 +90,7 @@ std::ostream& operator<<(std::ostream& os, const JunctionBox& box) {
 
 std::vector<JunctionBox> boxes;
 std::unordered_set<JunctionBoxConnection> connection_set;
+DistanceData connection_data[1000][1000];
 // std::unordered_map<JunctionBox, Circuit*> circuit_map;
 std::list<Circuit> circuit_list;
 
@@ -129,15 +136,13 @@ void ciruit_mergin_stuff(JunctionBox& one, JunctionBox& other) {
   circuit_list.erase(disposed_circuit);
 }
 
-void connect_one_pair() {
+void connect_first_pair() {
   double min = boxes[0] - boxes[1];
   size_t idx1 = 0, idx2 = 1;
   for (size_t i = 0; i < boxes.size(); i++) {
     for (size_t j = i + 1; j < boxes.size(); j++) {
-      if (connection_set.contains({boxes[i], boxes[j]})) {
-        continue;
-      }
       double distance = boxes[i] - boxes[j];
+      connection_data[i][j].distance = distance;
       if (distance < min) {
         min = distance;
         idx1 = i;
@@ -147,7 +152,29 @@ void connect_one_pair() {
   }
   JunctionBox& one = boxes[idx1];
   JunctionBox& other = boxes[idx2];
-  connection_set.emplace(one, other);
+  connection_data[idx1][idx2].connected = true;
+  ciruit_mergin_stuff(one, other);
+}
+
+void connect_all_other_pairs() {
+  double min = std::numeric_limits<double>::max();
+  size_t idx1, idx2;
+  for (size_t i = 0; i < boxes.size(); i++) {
+    for (size_t j = i + 1; j < boxes.size(); j++) {
+      if (connection_data[i][j].connected) {
+        continue;
+      }
+      double distance = connection_data[i][j].distance;
+      if (distance < min) {
+        min = distance;
+        idx1 = i;
+        idx2 = j;
+      }
+    }
+  }
+  JunctionBox& one = boxes[idx1];
+  JunctionBox& other = boxes[idx2];
+  connection_data[idx1][idx2].connected = true;
   ciruit_mergin_stuff(one, other);
 }
 
@@ -170,8 +197,9 @@ int main() {
   auto cb = [](std::string& line) { parse(line); };
   AoCReader reader{cb, 256, "2025/day8/input.txt"};
   reader.read();
-  for (int i = 0; i < 1000; i++) {
-    connect_one_pair();
+  connect_first_pair();
+  for (int i = 0; i < 999; i++) {
+    connect_all_other_pairs();
   }
   std::vector<Circuit> vector_list(circuit_list.cbegin(), circuit_list.cend());
   std::sort(vector_list.begin(), vector_list.end(), comparator);
