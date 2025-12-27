@@ -12,24 +12,6 @@
 #include "aoc_reader.h"
 #include "me_split.h"
 
-// class MyNodeMap {
-//   std::vector<lemon::ListDigraph::Node> map;
-
-//  public:
-//   void set(lemon::ListDigraph::NodeIt key, lemon::ListDigraph::Node value) {
-//     if (key >= map.size()) {
-//       map.reserve(key + 1);
-//       for (size_t i = 0; i < key - map.size() + 1; i++) {
-//         map.emplace_back();
-//       }
-//       map[key] = value;
-//     };
-//   }
-
-//   lemon::ListDigraph::Node operator[](size_t key) const { return map.at(key);
-//   }
-// };
-
 struct MyNodeKey {
   char node_id[4] = {};
   uint32_t asInteger() const {
