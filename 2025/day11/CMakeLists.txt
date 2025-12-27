@@ -1,4 +1,4 @@
-add_executable(day11 main.cc my_part2_helper.cc)
+add_executable(day11 main.cc)
 
 if(WIN32)
   set(LEMON_DIR C:/opt/lemon/cmake)
