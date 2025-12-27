@@ -43,7 +43,7 @@ int main() {
     TRAVERSE_STATE_MAX = 4
   };
 
-  distinctPathMap[start][0] = 1;
+  distinctPathMap[start][SEEN_NOTHING] = 1;
   for (auto current_vertex : topologicalSorted) {
     for (size_t i = 0; i < TRAVERSE_STATE_MAX; i++) {
       uint64_t been_reached_this_way = distinctPathMap[current_vertex][i];
